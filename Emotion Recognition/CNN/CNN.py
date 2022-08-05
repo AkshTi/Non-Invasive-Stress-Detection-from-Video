@@ -1,10 +1,9 @@
+#CNN model file. 
 import numpy as np
 import torch
 import torchvision.transforms as transforms
 import torch.nn as nn
 import torch.nn.functional as F
-import torch.optim as optim
-import matplotlib.pyplot as plt
 
 X_train_final = []
 X_test_final = []
@@ -84,34 +83,5 @@ transforms.Normalize((0.5,), (0.5,))
     def __len__(self):
         return len(self.data)
 
-transform_train = transforms.Compose([transforms.ToPILImage(), transforms.Resize(48), transforms.RandomHorizontalFlip(),
-        transforms.RandomVerticalFlip(), transforms.ToTensor(), transforms.Normalize((0.5), (0.5))])
-transform_test = transforms.Compose([transforms.ToPILImage(), transforms.Resize(48), transforms.ToTensor(), transforms.Normalize((0.5), (0.5))])
 
-images_train = np.load(r'/content/drive/MyDrive/Stress Detection/CKs/CK+/train_images.npy', encoding='latin1')
-train_labels = np.load(r'/content/drive/MyDrive/Stress Detection/CKs/CK+/train_labels.npy', encoding='latin1')
-print(images_train.shape)
-images_test = np.load(r'/content/drive/MyDrive/Stress Detection/CKs/CK+/test_images.npy', encoding='latin1')
-test_labels = np.load(r'/content/drive/MyDrive/Stress Detection/CKs/CK+/test_labels.npy', encoding='latin1')
-
-
-for i in range(0, len(images_train)):
-    X_train_final.append(torch.Tensor(images_train[i].reshape((1, 227, 227)))/255)
-for i in range(0, len(images_test)):
-    X_test_final.append(torch.Tensor(images_test[i].reshape((1, 227, 227)))/255)
-    
-X_train_label = torch.LongTensor(train_labels)
-X_test_label = torch.LongTensor(test_labels)
-
-trainset = custom_dataset(X_train_final,X_train_label, transforms=transform_train)
-testset = custom_dataset(X_test_final, X_test_label, transforms=transform_test)
-
-train_loader = torch.utils.data.DataLoader(trainset, batch_size=batch_Size, shuffle=True, num_workers=0)
-test_loader = torch.utils.data.DataLoader(testset, batch_size=100, shuffle=True, num_workers=0)
-
-device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-
-model = ConvNet().to(device)
-criterion = nn.CrossEntropyLoss()
-optimizer = optim.SGD(model.parameters(), lr=0.01, weight_decay=0.015, momentum=0.9)
 

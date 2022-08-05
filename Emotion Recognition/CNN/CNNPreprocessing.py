@@ -1,3 +1,5 @@
+# Preprocessing for training.
+
 import glob
 from shutil import copyfile, move
 import shutil
@@ -6,6 +8,7 @@ import stat
 import cv2
 from os import rename, listdir
 from os.path import isfile, join
+from CNN import *
 
 EMOTIONS = ["neutral", "anger", "contempt", "disgust", "fear", "happy", "sadness", "surprise"] 
 
@@ -38,7 +41,6 @@ def copy_tree(src, dst, symlinks = False, ignore = None):
 # #1. Copy files to two folders
 src1 = '/content/drive/MyDrive/Stress Detection/CKs/CK+/extended-cohn-kanade-images/cohn-kanade-images'
 dst1 = '/content/drive/MyDrive/Stress Detection/CKs/CK+/source_images'
-
 src2 = '/content/drive/MyDrive/Stress Detection/CKs/CK+/Emotion_labels/Emotion'
 dst2 = '/content/drive/MyDrive/Stress Detection/CKs/CK+/source_emotion'
 
@@ -73,11 +75,10 @@ for x in participants:
             print(sourcefile_neutral[-21:])
             dest_neut = "/sorted_set/neutral/%s" %sourcefile_neutral[-21:] #Generate path to put neutral image
             dest_emot = "/sorted_set/%s/%s" %(EMOTIONS[emotion], sourcefile_emotion[-21:]) #Do same for emotion containing image
-            # dest_neut = dest_neut.replace("Stress Detection/CKs/CK+/source_images/", "")
+            # dest_neut = dest_neut.replace("Stress Detection/CKs/CK+/source_images/", "") #execute depending upon file path
             # dest_emot = dest_emot.replace("Stress Detection/CKs/CK+/source_images/", "")
 
             print(dest_neut)
-            #/sorted_set/neutral/S005/001/S005_001_00000001.png
             copyfile(sourcefile_neutral, "/content/drive/MyDrive/Stress Detection/CKs/CK+" + dest_neut) #Copy file 47
             copyfile(sourcefile_emotion, "/content/drive/MyDrive/Stress Detection/CKs/CK+" +dest_emot) #Copy file
 
@@ -92,10 +93,10 @@ for i in range(len(EMOTIONS)):
 print('----------4. Finished creating 8 sub folders for extracted faces')
 
 # # 5. OpenCV to grayscale, crop each image
-faceDet = cv2.CascadeClassifier("/content/drive/MyDrive/Stress Detection/CKs/CK+/haar/haarcascade_frontalface_default.xml")
-faceDet_two = cv2.CascadeClassifier("/content/drive/MyDrive/Stress Detection/CKs/CK+/haar/haarcascade_frontalface_alt2.xml")
-faceDet_three = cv2.CascadeClassifier("/content/drive/MyDrive/Stress Detection/CKs/CK+/haar/haarcascade_frontalface_alt.xml")
-faceDet_four = cv2.CascadeClassifier("/content/drive/MyDrive/Stress Detection/CKs/CK+/haar/haarcascade_frontalface_alt_tree.xml")
+faceDet = cv2.CascadeClassifier("haar/haarcascade_frontalface_default.xml")
+faceDet_two = cv2.CascadeClassifier("haar/haarcascade_frontalface_alt2.xml")
+faceDet_three = cv2.CascadeClassifier("/haar/haarcascade_frontalface_alt.xml")
+faceDet_four = cv2.CascadeClassifier("/haar/haarcascade_frontalface_alt_tree.xml")
 
 def detect_faces(emotion):
     files = glob.glob("/content/drive/MyDrive/Stress Detection/CKs/CK+/sorted_set/%s/*" %emotion) #Get list of all images with emotion
@@ -134,7 +135,7 @@ for emotion in EMOTIONS:
 
 print('----------5. Finished OpenCV')
 
-# # 6. Remove extra Neutral faces
+# # 6. Remove extra Neutral faces (indices are previously provided)
 index_to_remove = [1,2,5,6,8,10,11,13,14,16,17,18,21,24,25,26,28,30,31,33,34,37,38,41,42,43,44,45,\
                    48,49,52,53,54,56,57,59,60,62,63,65,66,69,71,72,73,75,76,77,78,80,81,83,84,86,87,\
                    90,93,94,95,97,98,99,100,102,103,104,107,108,109,110,111,113,114,117,118,119,122,123,\
