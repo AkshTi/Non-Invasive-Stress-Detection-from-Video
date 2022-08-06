@@ -40,8 +40,6 @@ def get_image_files(emotion):
     random.shuffle(image_files)
     training = image_files[:int(len(image_files)*0.8)]
     test = image_files[-int(len(image_files)*0.4):]
-    #print("set training: ", len(training))
-    #print("set testing: ", len(test))
     return training, test
 
 def get_face_landmarks(image):
