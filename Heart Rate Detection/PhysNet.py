@@ -1,11 +1,9 @@
+#Spatiotemporal Model
 import torch
 import torch.nn as nn
 import torch
-from scipy.signal import resample
-import math
 import torch.nn.functional as F
-import os
-import glob
+
 
 class PhysNet(nn.Module):
     def __init__(self, frames=128):
@@ -144,25 +142,7 @@ class PhysNet(nn.Module):
 
         return x
 
-
-class SelfAttention(nn.Module):
-    def __init__(self, c, reduction_ratio=16):
-        super(SelfAttention, self).__init__()
-        self.decoded = nn.Conv3d(c,  math.ceil(c / reduction_ratio), kernel_size=1)
-        self.encoded = nn.Conv3d(math.ceil(c / reduction_ratio), c, kernel_size=1)
-        self.relu = nn.ReLU()
-
-    def forward(self, x):
-        N = x.size()[0]
-        C = x.size()[1]
-
-        decoded = self.decoded(x)
-        encoded = self.encoded(self.relu(torch.layer_norm(decoded, decoded.size()[1:])))
-        encoded = nn.functional.softmax(encoded)
-        cnn = x * encoded
-        return cnn
-
-
+# Neg Pearson Loss Function 
 class NegPearson(nn.Module): 
     def __init__(self):
         super(NegPearson, self).__init__()

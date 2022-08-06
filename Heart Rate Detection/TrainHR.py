@@ -1,4 +1,5 @@
 
+#Training code for Spatiotemporal model
 import torch.nn as nn
 import glob
 import os
@@ -158,7 +159,7 @@ def validate(val_loader, model, criterion):
     return top1.avg
 
 
-def save_checkpoint(state, is_best, filename='/content/drive/MyDrive/Stress Detection/PURECROPPED/CropModel.pth.tar'):
+def save_checkpoint(state, is_best, filename='CropModel.pth.tar'):
     """
     Save the training model
     """
@@ -191,8 +192,9 @@ def adjust_learning_rate(optimizer, epoch, every):
 
 
 if __name__ == '__main__':
+    #train_seq is arbitrary.
     train_sequence_list = "train_seq.txt"   
-    root_dir = "/content/drive/MyDrive/Stress Detection/PURECROPPED"
+    root_dir = "root_dir"
     seq_list = []
     end_indexes = []
     with open(root_dir+"/"+train_sequence_list, 'r') as seq_list_file:
@@ -214,7 +216,7 @@ if __name__ == '__main__':
                 fr_list = glob.glob(sequence_dir + '/cropped/*.png')
             else:
                 fr_list = glob.glob(sequence_dir + '/*.png')
-        # print(fr_list)
+ 
         end_indexes.append(len(fr_list))
 
     end_indexes = [0, *end_indexes]

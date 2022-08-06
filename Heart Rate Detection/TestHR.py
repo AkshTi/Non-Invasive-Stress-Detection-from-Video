@@ -1,4 +1,4 @@
-
+# Testing script for Spatiotemporal model
 import torch
 import torch.nn as nn
 
@@ -7,7 +7,6 @@ import os
 import torch
 import numpy as np
 import math
-import torch.nn.functional as F
 import os
 import glob
 import time
@@ -15,7 +14,6 @@ import torch.nn.parallel
 import torch.optim
 import torch.utils.data
 import torchvision.transforms as transforms
-import torchvision.datasets as datasets
 import matplotlib.pyplot as plt
 from scipy.signal import find_peaks
 import heartpy as hp
@@ -23,10 +21,12 @@ import PhysNet
 import PulseDataset
 from utilities import *
 from PhysNet import *
-resume = "/content/drive/MyDrive/Stress Detection/PURECROPPED/s_Drop_3d_32_14.tar" #'/content/drive/MyDrive/Stress Detection/PURE/Drop_3d_128_14.tar'
+
+#load the model from this path
+resume = "/content/drive/MyDrive/Stress Detection/PURECROPPED/s_Drop_3d_32_14.tar" 
 print("initialize model...")
 
-seq_len = 32 
+seq_len = 32  #arbitrary sequence length (should match the training sequence length)
 model = PhysNet(seq_len)
 model = torch.nn.DataParallel(model)
 model.cuda()
@@ -49,7 +49,7 @@ with open(root_dir + "/" + sequence_list, 'r') as seq_list_file:
     for line in seq_list_file:
         seq_list.append(line.rstrip('\n'))
 
-# seq_list = ['test_static']
+ 
 for s in seq_list:
     sequence_dir = os.path.join(root_dir, s)
     if sequence_dir[-2:len(sequence_dir)] == '_1':
@@ -67,7 +67,9 @@ for s in seq_list:
     end_indexes_test.append(len(fr_list))
 
 end_indexes_test = [0, *end_indexes_test]
-# print(end_indexes_test)
+
+
+#data reserves prior to testing
 
 sampler_test = PulseSampler(end_indexes_test, seq_len, False)
 
@@ -80,6 +82,7 @@ pulse_test = PulseDataset(sequence_list, root_dir, seq_len=seq_len,
                                                                                             normalize]))
 val_loader = torch.utils.data.DataLoader(pulse_test, batch_size=1, shuffle=False, sampler=sampler_test, pin_memory=True)
 
+# testing
 model.eval()
 criterion = NegPearson()
 criterion = criterion.cuda()
@@ -95,9 +98,6 @@ for k, (net_input, target) in enumerate(val_loader):
     target = target.cuda(non_blocking=True)
     with torch.no_grad():
         output, x_visual, x, t = model(net_input)
-        # print("output.shape ", output.shape)
-        # print("net_input.shape ", net_input.shape)
-        # print("target.shape ", target.shape)
         outputs.append(output[0])
         reference_.append(target[0])
         count+=1
@@ -122,11 +122,13 @@ highcut = 3
 yr = butter_bandpass_filter(outputs, lowcut, highcut, fs, order=4)
 yr = (yr - np.mean(yr)) / np.std(yr)
 
+#plot of output vs. filtered
 plt.subplots_adjust(right=0.7)
-#plt.plot(outputs, alpha=0.7, label='Network\n output')
+plt.plot(outputs, alpha=0.7, label='Network\n output')
 plt.plot(yr, label='Network\n output')
 plt.plot(reference_, '--', label='reference\n PPG')
 
+# plot of amplitudes.
 plt.legend(bbox_to_anchor=(1.02, 1), loc='upper left', borderaxespad=0, fontsize='large')
 plt.ylabel('Amplitude', fontsize='large', fontweight='semibold')
 plt.xlabel('Time', fontsize='large', fontweight='semibold')
@@ -134,11 +136,11 @@ plt.grid()
 plt.xlim([350, 550])
 plt.ylim([-2, 3])
 print("out/ref")
-#print(outputs.shape)
+ 
 print(len(reference_))
 plt.savefig('3d.svg', bbox_inches='tight')
 plt.show()
-#reference_ = [x for x in reference_ if math.isnan(x)==False]
+ 
 outputs = np.array(outputs)
 
 
@@ -150,6 +152,8 @@ hrv_ref = []
 hrv_out = []
 print(len(reference_))
 win = 255
+
+#convert to HR values
 for i in range(2*win, len(reference_), win):
     print("i :" + str(i) + "i + win: " + str(i+win))
     if (i<len(reference_)) and (i+win<len(reference_)):
@@ -163,32 +167,20 @@ for i in range(2*win, len(reference_), win):
           bmmp_filt.append(measures2['bpm'])
           bpm_out.append(mmm['bpm'])
           bpm_out2.append(30/(win/len(peaks_out))*win)
-print(len(bpm_ref))
-# print(bpm_filt)
-# print(peaks_out)
-# corr, _ = pearsonr(bmmp_filt, bpm_out)
-# c = np.corrcoef(bmmp_filt, bpm_out)
-# cc = np.corrcoef(bpm_ref, bpm_out2)
-# ccc = np.corrcoef(bmmp_filt, bpm_out2)
-# print("ref/out")
-# print(bpm_ref)
-# print(bmmp_filt)
-# print('Correlation:', c)
-print (type(reference_))
-print (type(output))
-#print (reference_.shape)
-print (output.shape)
-
+ 
 plt.subplots_adjust(right=0.7)
 print("max reference", max(reference_))
 print("min reference_", min(reference_))
 print("max output: ", max(output))
 print("min output: ", min(output))
 plt.scatter(reference_, outputs)
+
+# plot of reference vs. output bpms
 plt.xlabel("Reference", fontsize = "large", fontweight = "semibold")
 plt.ylabel("Output", fontsize = "large", fontweight = "semibold")
 plt.show()
 
+# Plot a power frequency spectrum.
 plt.subplots_adjust(right=0.7)
 time = np.arange(0, 3, 1 / fs)
 fourier_transform = np.fft.rfft(outputs)
@@ -212,6 +204,7 @@ plt.show()
 reference_ = torch.tensor(reference_)
 outputs = torch.tensor(outputs)
 
+# Plot the final results.
 criterionMSE = nn.MSELoss()
 criterionMAE = nn.L1Loss()
 mse = criterionMSE(reference_, outputs)

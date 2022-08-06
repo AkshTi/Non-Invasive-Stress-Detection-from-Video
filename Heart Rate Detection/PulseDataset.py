@@ -1,4 +1,4 @@
-
+# Pulse dataset created for training. Contains waveform data and images.
 import torch
 import glob
 import os
@@ -15,7 +15,6 @@ import torch.nn.parallel
 class PulseDataset(Dataset):
 
     def __init__(self, sequence_list, root_dir, length, img_height=120, img_width=120, seq_len=1, transform=None):
-
         seq_list = []
         with open(root_dir + "/" + sequence_list, 'r') as seq_list_file:
             for line in seq_list_file:
@@ -43,10 +42,8 @@ class PulseDataset(Dataset):
                 ref.append(line[-3:-1])
 
             ref = np.array(ref)
-
             ref_resample = resample(ref, len(fr_list))
             ref_resample = (ref_resample - np.mean(ref_resample)) / (np.max(ref_resample)-np.min(ref_resample))
-
             self.frames_list = self.frames_list.append(pd.DataFrame({'frames': fr_list, 'labels': ref_resample}))
 
         self.length = length
