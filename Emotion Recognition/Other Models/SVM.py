@@ -1,17 +1,16 @@
+# Training the linear svm.
 from Preprocessing import *
 import os
 from sklearn.metrics import confusion_matrix
 import numpy as np
 import joblib
-from sklearn.svm import SVC
-from sklearn.ensemble import AdaBoostClassifier
-from sklearn.tree import DecisionTreeClassifier
 import seaborn as sn
 import pandas as pd
 import matplotlib.pyplot as plt
 
 accuracy_linear_svm = []
 training_accuracy_linear_svm = []
+
 epochs = 50
 emotions = ["sadness", "neutral", "anger", "surprise", "disgust", "contempt", "fear", "happy"]
 print("Training Linear SVM")
@@ -29,6 +28,8 @@ for i in range(epochs):
     result = confusion_matrix(test_classes, prediction_labels)
     df_cm = pd.DataFrame(result, index = [i for i in emotions], columns = [i for i in emotions])
     plt.figure(figsize = (10,7))
+
+    #Generates the confusion matrix. (can optimize whether to print for each epoch)
     sn.heatmap(df_cm, annot=True, cmap="Greens")
     img_name = '/content/drive/MyDrive/Stress Detection/CKs/CK+/TrainModels/SVM/svm_confusion_matrix%s.png' %(i + 1)
     plt.savefig(img_name)
