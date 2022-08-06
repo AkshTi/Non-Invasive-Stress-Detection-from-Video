@@ -1,5 +1,5 @@
 # Non-Invasive-Stress-Detection-from-Video
-We present a non-invasive stress detector that identifies an individual's stress from video. It takes a multimodal approach to evaluate stress features through gacial recordings, and alerts the user in case they experience medium to high stress.
+We present a non-invasive stress detector that identifies an individual's stress from video. It takes a multimodal approach to evaluate stress features through facial recordings, and alerts the user in case they experience medium to high stress.
 
 ---
 # How To Use
@@ -39,3 +39,14 @@ The Facial feature detection represents a heuristic approach, and relies on two 
 `LipEyebrowFacialDetection.py` is the main file.
 
 `LipTest.py` serves mainly for visualization.
+---
+# Datasets
+
+**The Extended Cohn-Kanade Database** - A complete dataset for action unit and emotion-specified expression. 
+* [The-Extended-Cohn-Kanade-Dataset](https://ieeexplore.ieee.org/document/5543262)
+
+**PURE Pulse Rate Dataset** - A dataset consisting of 10 persons performing different, controlled head motions in front of a camera. During these sentences the image sequences of the head as well as reference pulse measurements were recorded. 
+* [PURE](https://www.tu-ilmenau.de/en/university/departments/department-of-computer-science-and-automation/profile/institutes-and-groups/institute-of-computer-and-systems-engineering/group-for-neuroinformatics-and-cognitive-robotics/data-sets-code/pulse-rate-detection-dataset-pure)
+
+**UBFC-Phys Stress Dataset** - Stress dataset, modeled after the Trier Social Stress Test, was collected with and without contact from participants living social stress situations.
+*  [UBFC-Phys-Stress-Dataset](https://ieeexplore.ieee.org/document/9346017)
