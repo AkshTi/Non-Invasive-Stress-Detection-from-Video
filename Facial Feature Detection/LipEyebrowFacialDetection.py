@@ -1,3 +1,4 @@
+# Code to run the facial feature analysis.
 import numpy as np
 import dlib
 import cv2
@@ -7,16 +8,19 @@ from imutils import face_utils
 
 global points, points_lip, emotion_classifier
 
+# determines distance between landmark points
 def ebdist(leye,reye):
     eyedist = dist.euclidean(leye,reye)
     points.append(int(eyedist))
     return eyedist
 
+# determines mouth size (distance between upper and lower lip)
 def lpdist(l_lower,l_upper):
     lipdist = dist.euclidean(l_lower, l_upper)
     points_lip.append(int(lipdist))
     return lipdist
     
+# values are put in formula and output with a movement-based stress score.
 def normalize_values(points,disp,points_lip,dis_lip):
     normalize_value_lip = abs(dis_lip - np.min(points_lip))/abs(np.max(points_lip) - np.min(points_lip))
     normalized_value_eye =abs(disp - np.min(points))/abs(np.max(points) - np.min(points))
@@ -47,12 +51,11 @@ def get_frame(directory):
         
           (lBegin, lEnd) = face_utils.FACIAL_LANDMARKS_IDXS["right_eyebrow"]
           (rBegin, rEnd) = face_utils.FACIAL_LANDMARKS_IDXS["left_eyebrow"]
-  
           (l_lower, l_upper) = face_utils.FACIAL_LANDMARKS_IDXS["mouth"]
 
           gray = cv2.cvtColor(frame,cv2.COLOR_BGR2GRAY)
           count +=1
-          detections = detector(gray,0)
+          detections = detector(gray,0) #initialize the detector
           for detection in detections:
             shape = predictor(frame,detection)
             shape = face_utils.shape_to_np(shape)
@@ -65,7 +68,7 @@ def get_frame(directory):
             leyebrowhull = cv2.convexHull(leyebrow)
             openmouthhull = cv2.convexHull(openmouth) # figuring out convex shape when lips opened
             lipdist = lpdist(openmouthhull[-1],openmouthhull[0])
-            eyedist = ebdist(leyebrow[-1],reyebrow[0])
+            eyedist = ebdist(leyebrow[-1], reyebrow[0])
 
             stress_value,stress_label = normalize_values(points,eyedist, points_lip, lipdist)
             print(str(count) + "/" + str(total))
@@ -74,11 +77,5 @@ def get_frame(directory):
             
             if count==total:
               cap.release()
-        
-
-          #cap.release()
     return stress_value_list, stress_level_list, fps, total
-
-# plt.plot(range(len(points)),points,'ro')
-# plt.title("Stress Levels")
-# plt.show()
+ 
