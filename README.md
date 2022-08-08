@@ -5,12 +5,16 @@ We present a non-invasive stress detector that identifies an individual's stress
 # How To Use
 
 Download `Common.py`, `EDetect.py`, `EntireRec.py`, `Integration.py`, `PulseSampler.py`, and `app.py` to the same directory. 
-Download all model files to the same directory, as well as the the test inputs. 
+Download all model files to the same directory. 
+We have provided test inputs in the `Web App`/`static`/`video` directory.
 When running, chnage each path to the directory of the test input, and run **getStressed** in `Integration.py`.
 
 ---
 
 # Testing and Training
+
+`requirements.txt` specifies the versions and modules used in our environment. 
+
 **Emotion Recognition** includes the several models we trained and tested. Simply run the testing and training files for the respective model you choose.
 
 The Emotion Recognition model is trained off the Extended Cohn Kanade Dataset. 
