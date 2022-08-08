@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+<title>Stress Detection</title>
+<Head>
+    <script>
+    async function renderResult1(result) {
+        //let result = await getResult(input_url);
+        let html = '';
+        let htmlSegment = `<div>
+                                <!-- <h1 class="w3-center w3-jumbo w3-padding-32"> Results </h1> -->
+                                <h2>${result.StressText}</h2>
+                                <img src="${result.ImageURL}" >                                
+                            </div>`;
+        html += htmlSegment;
+        let results = document.querySelector('.results1');
+        results.innerHTML = html;
+    }
+
+    async function renderResult2(result) {
+        //let result = await getResult(input_url);
+        let html = '';
+        let htmlSegment = `<div>
+                                <!-- <h1 class="w3-center w3-jumbo w3-padding-32"> Results </h1> -->
+                                <h2>${result.StressText}</h2>
+                                <img src="${result.ImageURL}" >                                
+                            </div>`;
+        html += htmlSegment;
+        let results = document.querySelector('.results2');
+        results.innerHTML = html;
+    }
+
+
+    function disableDivs(input_div) {
+        if(input_div=='home') {
+            document.getElementById('home').setAttribute('style', 'display:block');
+            document.getElementById('detectstress').setAttribute('style', 'display:none');
+            document.getElementById('uploadanddetect').setAttribute('style', 'display:none');            
+            document.getElementById('information').setAttribute('style', 'display:none');
+            document.getElementById('about').setAttribute('style', 'display:none');
+        }
+        if(input_div=='detectstress') {
+            document.getElementById('detectstress').setAttribute('style', 'display:block');
+            document.getElementById('home').setAttribute('style', 'display:none');
+            document.getElementById('uploadanddetect').setAttribute('style', 'display:none');            
+            document.getElementById('information').setAttribute('style', 'display:none');
+            document.getElementById('about').setAttribute('style', 'display:none');
+        }
+        if(input_div=='uploadanddetect') {
+            document.getElementById('uploadanddetect').setAttribute('style', 'display:block');
+            document.getElementById('home').setAttribute('style', 'display:none');
+            document.getElementById('detectstress').setAttribute('style', 'display:none');            
+            document.getElementById('information').setAttribute('style', 'display:none');
+            document.getElementById('about').setAttribute('style', 'display:none');
+        }
+        if(input_div=='information') {
+            document.getElementById('information').setAttribute('style', 'display:block');
+            document.getElementById('home').setAttribute('style', 'display:none');
+            document.getElementById('detectstress').setAttribute('style', 'display:none');
+            document.getElementById('uploadanddetect').setAttribute('style', 'display:none');
+            document.getElementById('about').setAttribute('style', 'display:none');
+        }
+        if(input_div=='about') {
+            document.getElementById('about').setAttribute('style', 'display:block');
+            document.getElementById('home').setAttribute('style', 'display:none');
+            document.getElementById('detectstress').setAttribute('style', 'display:none');
+            document.getElementById('uploadanddetect').setAttribute('style', 'display:none');
+            document.getElementById('information').setAttribute('style', 'display:none');
+        }
+
+    }
+    </script>
+</Head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href='{{ url_for("static", filename="css/w3.css") }}'>
+<script src='{{ url_for("static", filename="js/w3.js") }}'></script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+<style>
+body,h1,h2,h3,h4,h5,h6 {font-family: "Raleway", sans-serif}
+</style>
+<body>
+<!-- Start Content -->
+
+<!-- Navbar (Sits on top) -->
+<div class="w3-top w3-bar w3-xxlarge w3-black w3-opacity-min">
+<a style="font-size: 22px" href="#home" class="w3-bar-item w3-button" onclick="disableDivs('home')">Home</a>
+<a style="font-size: 22px" href="#detectstress" class="w3-bar-item w3-button" onclick="disableDivs('detectstress')">Detect Stress</a>
+<a style="font-size: 22px" href="#uploadanddetect" class="w3-bar-item w3-button" onclick="disableDivs('uploadanddetect')">Upload and Detect</a>
+<a style="font-size: 22px" href="#information" class="w3-bar-item w3-button" onclick="disableDivs('information')">Information</a>
+<a style="font-size: 22px" href="#about" class="w3-bar-item w3-button" onclick="disableDivs('about')">About</a>
+</div>
+
+<div id="home" class="w3-content">
+<!-- Header image -->
+<div style="height:800px;background-image:url('{{ url_for("static", filename="images/stress_watermark.jpg") }}');background-size:cover" class="w3-display-container w3-grayscale-min">
+<div class="w3-display-middle w3-center">
+<!--<span class="w3-text-white" style="font-size:100px">detect<br>STRESS</span> -->
+<p><a href="#detectstress" class="w3-button w3-xlarge w3-black" onclick="disableDivs('detectstress')">Let's detect stress</a></p>
+</div>
+</div>
+<!-- End Content -->
+</div>
+
+<!-- Menu -->
+<div id="detectstress" class="w3-container w3-white w3-xlarge w3-padding-64">
+    <!--<h1 class="w3-center w3-jumbo w3-padding-32">DETECT STRESS</h1> -->
+    <br>
+    Please select from the videos below to see how our software detects stress. 
+    <br>
+    <form id="form1">
+    <input class="w3-radio" type="radio" id="test1.mp4" name="videos" value="test1.mp4"> <label for="test1.mp4">1</label> 
+    <video width="210" height="160" controls>
+        <source src='{{ url_for("static", filename="video/test1.mp4") }}' type="video/mp4">
+        ur browser does not support the video tag.
+    </video>
+    <input class="w3-radio" type="radio" id="test2.mp4" name="videos" value="test2.mp4"> <label for="test2.mp4">2</label>
+    <video width="210" height="160" controls>
+        <source src='{{ url_for("static", filename="video/test2.mp4") }}' type="video/mp4">
+        ur browser does not support the video tag.
+    </video>
+    <input class="w3-radio" type="radio" id="test3.mp4" name="videos" value="test3.mp4"> <label for="test3.mp4">3</label>   
+    <video width="210" height="160" controls>
+        <source src='{{ url_for("static", filename="video/test3.mp4") }}' type="video/mp4">
+        ur browser does not support the video tag.
+    </video>    
+    <br>
+    <input class="w3-radio" type="radio" id="test4.mp4" name="videos" value="test4.mp4"> <label for="test4.mp4">4</label>   
+    <video width="210" height="160" controls>
+        <source src='{{ url_for("static", filename="video/test4.mp4") }}' type="video/mp4">
+        ur browser does not support the video tag.
+    </video>
+    <input class="w3-radio" type="radio" id="test5.mp4" name="videos" value="test5.mp4"> <label for="test5.mp4">5</label>       
+    <video width="210" height="160" controls>
+        <source src='{{ url_for("static", filename="video/test5.mp4") }}' type="video/mp4">
+        ur browser does not support the video tag.
+    </video>    
+    <input class="w3-radio" type="radio" id="test6.mp4" name="videos" value="test6.mp4"> <label for="test6.mp4">6</label>         
+    <video width="210" height="160" controls>
+        <source src='{{ url_for("static", filename="video/test6.mp4") }}' type="video/mp4">
+        ur browser does not support the video tag.
+    </video>  
+    <br> 
+    <br>
+    <!--<button class="w3-button w3-green w3-block" type="button" onclick="getResultAndRender('/returnjson')">Detect and Scroll down to see results</button> -->
+    <button class="w3-button w3-green w3-block" type="submit">Detect and Scroll down to see results</button>
+    </form>
+    <div class="results1"></div>
+
+</div>
+    <!-- upload and detect -->
+<div id="uploadanddetect" class="w3-container w3-white w3-xlarge w3-padding-64"> 
+    <br>   
+    Please select video for analysis:
+    <br>
+    <form id="form2">
+    <input type="file" name = "file" value="Select video file to analyze stress">
+    <P>
+    <button class="w3-button w3-green w3-block" type="submit">Detect and Scroll down to see results</button>
+    </form>
+    <div class="results2"></div>
+</div>
+
+
+
+<!-- Information -->
+<div id="information" class="w3-container w3-light-blue w3-grayscale w3-xlarge w3-padding-64">
+    <!-- <h1 class="w3-center w3-jumbo">Information</h1> -->
+    <p>Stress has risen as one of the highest concerns in maintaining a healthy lifestyle, 
+        as it can affect several aspects of the human body and impede an individual's daily activities.
+        Identifying stress is crucial in order to avoid the consequences associated with such developments. 
+        Current stress-detection methods are relatively slow and subjective, as they often take place through 
+        invasive measurements via medical devices. We propose the first uploadable stress-detector. 
+        Through machine learning, we detect stress by taking into account facial emotions, heart rate variability, 
+        and movement in certain facial organs. We combine these three measurements to output a final stress 
+         score per unit time.</p>
+</div>
+    
+
+<!-- About -->
+<div id="about" class="w3-container w3-red w3-grayscale w3-xlarge w3-padding-64">
+
+<!--  <h1 class="w3-center w3-jumbo">About</h1> -->
+
+<p>We are group of people trying to use latest technology in machine learning and artificial intelligence
+    to solve everyday problems. Please find our short bios below:</p>
+
+<p>The student: Akshata Tiwari 
+<img src="/w3images/chef.jpg" style="width:150px" class="w3-circle w3-right" alt="Student"></p>
+
+<p>I am thankful to my mentors.</p>
+<p class="w3-padding-16 w3-stretch"> Dr. Brian Matejek
+<img src="img_restaurant.jpg" style="width:100%" alt="Brian">
+</p>
+<p class="w3-padding-16 w3-stretch"> Dr. Daniel Haehn
+<img src="img_restaurant.jpg" style="width:100%" alt="Daniel">
+</p>
+</div>
+
+<script>
+
+const form1 = document.getElementById('form1');
+form1.addEventListener('submit', function(e) {
+     // Prevent default behavior:
+     e.preventDefault();
+     let results = document.querySelector('.results1');
+     results.innerHTML = "<p> Please Be patient- we are working hard to analyze stress! Results will be shown here in a bit..... </p>";
+          
+     // Create payload as new FormData object:
+     const payload = new FormData(form1);
+     // Post the payload using Fetch:
+     try {
+        
+        let res =  fetch('/stresstest', {
+        method: 'POST',
+        body: payload,
+        })
+        .then(res => res.json())
+        .then(data => renderResult1(data))
+    } catch (error) {
+        console.log(error);
+    }
+ })
+
+
+const form2 = document.getElementById('form2');
+form2.addEventListener('submit', function(e) {
+     // Prevent default behavior:
+     e.preventDefault();
+     let results = document.querySelector('.results2');
+     results.innerHTML = "<p> Please Be patient. We are working hard. Results will be shown here in a few moments...... </p>";
+     // Create payload as new FormData object:
+     const payload = new FormData(form2);
+     // Post the payload using Fetch:
+     try {       
+        let res =  fetch('/stress', {
+        method: 'POST',
+        body: payload,
+        })
+        .then(res => res.json())
+        .then(data => renderResult2(data))
+    } catch (error) {
+        console.log(error);
+    }
+ })
+</script>
+
+</div>
+</body>
+</html>
