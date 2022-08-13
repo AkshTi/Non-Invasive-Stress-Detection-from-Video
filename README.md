@@ -15,6 +15,8 @@ When running, chnage each path to the directory of the test input, and run **get
 
 `requirements.txt` specifies the versions and modules used in our environment. 
 
+Use `environment_droplet.yml` to create an environment.
+
 **Emotion Recognition** includes the several models we trained and tested. Simply run the testing and training files for the respective model you choose.
 
 The Emotion Recognition model is trained off the Extended Cohn Kanade Dataset. 
@@ -34,6 +36,7 @@ After downloading the dataset, simply replace the directories in these files wit
 `PulseDataset.py` -> Framework to hold data.
 
 Download the above and run `TrainHR` for training.
+
 For testing, use `TestHR`.
 
 **Facial Feature Analysis**
@@ -43,6 +46,7 @@ The Facial feature detection represents a heuristic approach, and relies on two 
 `LipEyebrowFacialDetection.py` is the main file.
 
 `LipTest.py` serves mainly for visualization.
+
 ---
 # Datasets
 
