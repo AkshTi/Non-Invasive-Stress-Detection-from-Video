@@ -4,10 +4,17 @@ We present a non-invasive stress detector that identifies an individual's stress
 ---
 # How To Use
 
-Download `Common.py`, `EDetect.py`, `EntireRec.py`, `Integration.py`, `PulseSampler.py`, and `app.py` to the same directory. 
-Download all model files to the same directory. 
-We have provided test inputs in the `Web App`/`static`/`video` directory.
-When running, chnage each path to the directory of the test input, and run **getStressed** in `Integration.py`.
+Download the `Web App` directory. Make sure none of the filenames or contents of folders within this directory are changed.
+
+Run the following commands after navigating to the web app directory: 
+
+```
+$ set FLASK_ENV=development
+$ set FLASK_APP=app.py
+$ flask run
+```
+
+Wait, and double-click `home.html` from `templates\`.
 
 ---
 
