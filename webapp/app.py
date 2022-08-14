@@ -6,7 +6,7 @@ from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
 
-# os.makedirs(os.path.join(app.instance_path,'videofiles'),exist_ok=True)
+os.makedirs(os.path.join(app.instance_path,'videofiles'),exist_ok=True)
 
 #app.config['UPLOAD_FOLDER'] = IMAGE_FOLDER
 
