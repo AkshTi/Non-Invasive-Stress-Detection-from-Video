@@ -1,4 +1,4 @@
 webapp/instance/
 webapp/landmarks.dat
 webapp/weights.hdf5
-webapp/__pycache__/*
+webapp/__pycache__/
