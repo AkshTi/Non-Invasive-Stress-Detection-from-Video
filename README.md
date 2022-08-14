@@ -13,7 +13,7 @@ $ curl -L -o weights.hdf5 https://www.dropbox.com/s/9sdgly1x56uh7j8/weights.hdf5
 $ curl -L -o landmarks.dat https://www.dropbox.com/s/ra6pkpytt6cryyq/landmarks.dat?dl=1
 ```
 
-Run the following commands after navigating to the web app directory: 
+Now let's start the server for real:
 ```
 $ set FLASK_ENV=development
 $ set FLASK_APP=app.py
