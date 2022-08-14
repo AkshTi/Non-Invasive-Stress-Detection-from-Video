@@ -7,6 +7,8 @@ We present a non-invasive stress detector that identifies an individual's stress
 
 After cloning this repository, use the following commands to download the weights and start the webserver.
 ```
+$ conda env create -f environment.yml
+
 $ cd webapp
 
 $ curl -L -o weights.hdf5 https://www.dropbox.com/s/9sdgly1x56uh7j8/weights.hdf5?dl=1
@@ -28,7 +30,7 @@ Go to http://localhost:5000/ to access the application!
 
 `requirements.txt` specifies the versions and modules used in our environment. 
 
-Use `environment_droplet.yml` to create an environment.
+Use `environment.yml` to create an environment.
 
 **Emotion Recognition** includes the several models we trained and tested. Simply run the testing and training files for the respective model you choose.
 
