@@ -9,7 +9,7 @@ Download the `Web App` directory. Make sure none of the filenames or contents of
 Download the Emotion-Recognition-Model file and `shape_predictor_68_face_landmarks.dat`: 
 
 ```
-$ curl https://drive.google.com/file/d/1ZpTkS6vkx5yhLRk2sl3ugas4O2iv2yQK/view?usp=sharing > FINLAweights.beste.hdf5
+$ curl https://drive.google.com/u/2/uc?id=1ZpTkS6vkx5yhLRk2sl3ugas4O2iv2yQK&export=download > FINLAweights.beste.hdf5
 $ curl https://drive.google.com/file/d/1pZcdNec4lwdBewNS0IscjYcukrhr2xAF/view?usp=sharing > shape_predictor_68_face_landmarks.dat
 ```
 
