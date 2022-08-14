@@ -6,15 +6,21 @@ We present a non-invasive stress detector that identifies an individual's stress
 
 Download the `Web App` directory. Make sure none of the filenames or contents of folders within this directory are changed.
 
-Run the following commands after navigating to the web app directory: 
+Download the Emotion-Recognition-Model file and `shape_predictor_68_face_landmarks.dat`: 
 
+```
+$ curl https://drive.google.com/file/d/1ZpTkS6vkx5yhLRk2sl3ugas4O2iv2yQK/view?usp=sharing > FINLAweights.beste.hdf5
+$ curl https://drive.google.com/file/d/1pZcdNec4lwdBewNS0IscjYcukrhr2xAF/view?usp=sharing > shape_predictor_68_face_landmarks.dat
+```
+
+Run the following commands after navigating to the web app directory: 
 ```
 $ set FLASK_ENV=development
 $ set FLASK_APP=app.py
 $ flask run
 ```
 
-Wait, and double-click `home.html` from `templates\`.
+Wait, and double-click `home.html` from `templates\` after the flask has successfully run.
 
 ---
 
