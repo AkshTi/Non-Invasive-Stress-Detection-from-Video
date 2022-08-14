@@ -5,7 +5,8 @@ import os
 from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
-os.makedirs(os.path.join(app.instance_path,'videofiles'),exist_ok=True)
+
+# os.makedirs(os.path.join(app.instance_path,'videofiles'),exist_ok=True)
 
 #app.config['UPLOAD_FOLDER'] = IMAGE_FOLDER
 
@@ -44,7 +45,7 @@ def detect_stress():
 def stresstest():
     if request.method == 'POST':
         selected_option = request.form['videos']
-        getStressed(os.path.join(app.instance_path,'videofiles'), selected_option, os.path.join("instance"))
+        getStressed(os.path.join('.','static','video'), selected_option, os.path.join("instance"))
         data = {
             "StressText" : "Your Stress is .....",
             "ImageURL" :  os.path.join('static', 'StressGraph.png')
