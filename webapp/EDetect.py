@@ -47,6 +47,8 @@ def ebdist(leye,reye):
     return eyedist
 
 def lpdist(l_lower,l_upper):
+
+    print(l_lower, l_upper)
     lipdist = dist.euclidean(l_lower, l_upper)
     points_lip.append(int(lipdist))
     return lipdist
@@ -63,7 +65,7 @@ def normalize_values(points,disp,points_lip,dis_lip):
     return stress_value,stress_label
     
 detector = dlib.get_frontal_face_detector()
-predictor = dlib.shape_predictor(r"shape_predictor_68_face_landmarks.dat")
+predictor = dlib.shape_predictor(r"landmarks.dat")
 points = []
 points_lip = []
 def get_frame(directory, duration, fps, frame_count): 

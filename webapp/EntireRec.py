@@ -132,7 +132,7 @@ def getEmotions(directory):
       image = cv2.imread(os.path.join(directory, filename))
       image = cv2.resize(image, (48, 48))
       data.append(image)
-  model = load_model("FINLAweights.beste.hdf5")
+  model = load_model("weights.hdf5")
   predictionList = []
   for image in data:
     image = image.reshape(1, 48, 48, 3)
