@@ -48,8 +48,7 @@ def ebdist(leye,reye):
 
 def lpdist(l_lower,l_upper):
 
-    print(l_lower, l_upper)
-    lipdist = dist.euclidean(l_lower, l_upper)
+    lipdist = dist.euclidean(l_lower[0], l_upper[0])
     points_lip.append(int(lipdist))
     return lipdist
     
