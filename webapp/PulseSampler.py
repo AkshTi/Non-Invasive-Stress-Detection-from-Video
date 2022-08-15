@@ -378,9 +378,9 @@ def getHeartRate(path, duration):
     else:
         print("=> no checkpoint found at '{}'".format(resume))
     end_indexes_test = []
-    print(path)
+    # print(path)
     fr_list = glob.glob(path + os.sep + '*.jpg')
-    print("fr_list: ", fr_list)
+    # print("fr_list: ", fr_list)
     end_indexes_test.append(len(fr_list))
     end_indexes_test = [0, *end_indexes_test]
     normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406],
