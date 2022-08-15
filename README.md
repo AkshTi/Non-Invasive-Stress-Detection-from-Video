@@ -21,8 +21,6 @@ $ curl -L -o landmarks.dat https://www.dropbox.com/s/ra6pkpytt6cryyq/landmarks.d
 
 Now let's start the server for real:
 ```
-$ set FLASK_ENV=development
-$ set FLASK_APP=app.py
 $ flask run
 ```
 
