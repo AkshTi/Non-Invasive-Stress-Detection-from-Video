@@ -76,7 +76,7 @@ function record() {
         video_local = new Blob([e.data], { type: 'video/webm' });
 
 
-         var xhr = new XMLHttpRequest();
+         xhr = new XMLHttpRequest();
          xhr.responseType = 'json';
          xhr.open("POST", '/stress', true);
          //creating form data to append files

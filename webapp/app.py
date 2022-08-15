@@ -47,7 +47,7 @@ def detect_stress():
 
         videofilename = videofilename.replace('.webm', '.mp4')
 
-        final_stress_score = getStressed( videofilename, 
+        final_stress_score, heart_rates, emotions, facial_movements = getStressed( videofilename, 
                                           framedirectory)
 
         #image1=os.path.join('static', 'Emot.PNG')
@@ -58,6 +58,9 @@ def detect_stress():
         data = {
             "StressText" : "Your Stress is .....",
             "StressScore": final_stress_score,
+            "HeartRates": [float(v) for v in heart_rates],
+            "Emotions": [float(v) for v in emotions],
+            "FacialMovements": [float(v) for v in facial_movements],
             "ImageURL" :  os.path.join('static', 'StressGraph.png')
         }  
         return jsonify(data)
