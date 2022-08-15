@@ -93,17 +93,23 @@ def converter(emotion_array, bpm_list, stress_value_list, duration):
   #plt.show()
   plt.savefig(os.path.join('static', 'StressGraph.png'))
   plt.clf()
+
+  return final_stress_score
   
 #--------------entire function
-def getStressed(filepath, filename, instance_path):
-    duration, fps, frame_count = getMetrics(os.path.join(filepath, filename))
-    getPicfromVideo(filepath, filename)
-    emotion_array = getEmotion(instance_path, duration)
-    stress_value_list = stress_value_list = getEmotionEyebrowDetection(os.path.join(filepath, filename), duration, fps, frame_count)
-    bpm_list = getHeartRate(instance_path, duration)
+def getStressed(videofilename, framedirectory):
+    duration, fps, frame_count = getMetrics(videofilename)
+    
+    # print('AAAAAA', duration, fps, frame_count)
+    getPicfromVideo(videofilename, framedirectory)
+    emotion_array = getEmotion(framedirectory, duration)
+    stress_value_list = stress_value_list = getEmotionEyebrowDetection(videofilename, duration, fps, frame_count)
+    bpm_list = getHeartRate(framedirectory, duration)
     print("Combining all 3 outputs into a final stress score.....")
-    converter(emotion_array, bpm_list, stress_value_list, duration)
+    final_stress_score = converter(emotion_array, bpm_list, stress_value_list, duration)
     print("Contactless Stress Detection Complete! Results are above ^")
+
+    return final_stress_score
 
 #----run
 

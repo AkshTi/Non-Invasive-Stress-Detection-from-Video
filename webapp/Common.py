@@ -39,35 +39,44 @@ import matplotlib.image as mpimg
 import warnings
 warnings.filterwarnings("ignore")
 
-def getPicfromVideo(filepath, vidname):
+def getPicfromVideo(videofilename, framedirectory):
   import cv2
   #length = len([entry for entry in os.listdir(filepath) if os.path.isfile(os.path.join(filepath, entry))])
-  print("filepath [3]: " + filepath)
-  vid_path = os.path.join(filepath, vidname)
-  vidcap = cv2.VideoCapture(vid_path)
-  def getFrame(sec):
-      vidcap.set(cv2.CAP_PROP_POS_MSEC,sec*1000)
-      hasFrames,image = vidcap.read()
-      if hasFrames:
-          path = os.path.join("instance", "image"+str(count)+".jpg")
-          cv2.imwrite(path, image)     # save frame as JPG file
-      return hasFrames
-  sec = 0
-  framespersecond = vidcap.get(cv2.CAP_PROP_FPS)
-  frameRate = 1/framespersecond #//it will capture image in each 0.5 second
-  count=1
-  success = getFrame(sec)
-  while success:
-      count = count + 1
-      sec = sec + frameRate
-      sec = round(sec, 2)
-      success = getFrame(sec)
-  #length = len([entry for entry in os.listdir(filepath) if os.path.isfile(os.path.join(filepath, entry))])
-  # get length, fps, and framecount of the video
+  print("vid_path", videofilename)
+  vidcap = cv2.VideoCapture(videofilename)
 
-def getMetrics(path):
-  print("Thing to get video fors: " + path)
-  cap = cv2.VideoCapture(path)
+  frame_count = int(vidcap.get(cv2.CAP_PROP_FRAME_COUNT))
+
+  for i in range(frame_count):
+    hasFrames,image = vidcap.read()
+    if hasFrames:
+        path = os.path.join(framedirectory, "image"+str(i)+".jpg")
+        cv2.imwrite(path, image)     # save frame as JPG file
+
+
+  # def getFrame(sec):
+  #     vidcap.set(cv2.CAP_PROP_POS_MSEC,sec*1000)
+  #     hasFrames,image = vidcap.read()
+  #     if hasFrames:
+  #         path = os.path.join(framedirectory, "image"+str(count)+".jpg")
+  #         cv2.imwrite(path, image)     # save frame as JPG file
+  #     return hasFrames
+
+  # sec = 0
+  # framespersecond = vidcap.get(cv2.CAP_PROP_FPS)
+  # frameRate = 1/framespersecond #//it will capture image in each 0.5 second
+  # count=1
+  # success = getFrame(sec)
+  # while success:
+  #     count = count + 1
+  #     sec = sec + frameRate
+  #     sec = round(sec, 2)
+  #     success = getFrame(sec)
+  # #length = len([entry for entry in os.listdir(filepath) if os.path.isfile(os.path.join(filepath, entry))])
+  # # get length, fps, and framecount of the video
+
+def getMetrics(videofilename):
+  cap = cv2.VideoCapture(videofilename)
   fps = cap.get(cv2.CAP_PROP_FPS)
   frame_count = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
   duration = frame_count // fps

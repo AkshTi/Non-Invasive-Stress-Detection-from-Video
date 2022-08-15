@@ -3,16 +3,20 @@ from flask import request
 from flask import Flask, render_template, jsonify, request
 import os
 from werkzeug.utils import secure_filename
+import tempfile
+import matplotlib
+matplotlib.use('Agg')
 
 app = Flask(__name__)
 
 os.makedirs(os.path.join(app.instance_path,'videofiles'),exist_ok=True)
 
+
 #app.config['UPLOAD_FOLDER'] = IMAGE_FOLDER
 
 @app.route('/')
 def home():
-    return render_template("home.html")
+    return render_template("cam.html")
 
 @app.route('/returnjson', methods = ['GET'])
 def ReturnJSON():
@@ -25,10 +29,26 @@ def ReturnJSON():
 
 @app.route('/stress', methods=['POST'])
 def detect_stress():
+    print('GGGGGG')
     if request.method == 'POST':
+
         f = request.files['file']
-        f.save(os.path.join(app.instance_path, 'videofiles',secure_filename(f.filename)))
-        getStressed(os.path.join(app.instance_path,'videofiles'), f.filename, os.path.join("instance"))
+
+        handle, videofilename = tempfile.mkstemp(suffix='.webm', dir=os.path.join(app.instance_path, 'videofiles'))
+        f.save(videofilename)
+
+
+
+        framedirectory = tempfile.mkdtemp(prefix=videofilename, dir=os.path.join(app.instance_path, 'frames'))
+ 
+
+        if videofilename.endswith('webm'):
+          os.system('ffmpeg -i ' + videofilename + ' ' + videofilename.replace('.webm', '.mp4'))
+
+        videofilename = videofilename.replace('.webm', '.mp4')
+
+        final_stress_score = getStressed( videofilename, 
+                                          framedirectory)
 
         #image1=os.path.join('static', 'Emot.PNG')
         #image2=os.path.join('static', 'FacialMovement.PNG')
@@ -37,6 +57,7 @@ def detect_stress():
         #return render_template("result.html", image1 = image1, image2 = image2, image3 = image3, image4 = image4 )
         data = {
             "StressText" : "Your Stress is .....",
+            "StressScore": final_stress_score,
             "ImageURL" :  os.path.join('static', 'StressGraph.png')
         }  
         return jsonify(data)
