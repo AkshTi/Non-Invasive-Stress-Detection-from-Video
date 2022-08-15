@@ -43,7 +43,7 @@ def detect_stress():
  
 
         if videofilename.endswith('webm'):
-          os.system('ffmpeg -i ' + videofilename + ' ' + videofilename.replace('.webm', '.mp4'))
+          os.system('ffmpeg -i ' + videofilename + ' -filter:v fps=30 ' + videofilename.replace('.webm', '.mp4'))
 
         videofilename = videofilename.replace('.webm', '.mp4')
 
