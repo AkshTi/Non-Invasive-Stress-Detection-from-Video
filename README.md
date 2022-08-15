@@ -5,11 +5,11 @@ We present a non-invasive stress detector that identifies an individual's stress
 # How To Use
 
 
-After cloning this repository, use the following commands to download the weights and start the webserver.
+After cloning this repository, use the following commands to install the CONDA environment, download the weights, and start the webserver.
 ```
-$ conda env create -f environment.yml
-
 $ cd webapp
+
+$ conda create env -f environment.yml
 
 $ curl -L -o weights.hdf5 https://www.dropbox.com/s/9sdgly1x56uh7j8/weights.hdf5?dl=1
 $ curl -L -o landmarks.dat https://www.dropbox.com/s/ra6pkpytt6cryyq/landmarks.dat?dl=1

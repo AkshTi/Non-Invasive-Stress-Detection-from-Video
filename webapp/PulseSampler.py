@@ -38,6 +38,7 @@ import imutils
 from imutils import face_utils
 import matplotlib.image as mpimg
 import warnings
+
 warnings.filterwarnings("ignore")
 
 #------------utils
@@ -440,7 +441,7 @@ def getHeartRate(path, duration):
     plt.xlabel('Time (seconds)', fontsize='large')
     #plt.grid()
     #plt.show()
-    plt.savefig(os.path.join('static', 'HRsta.PNG'))
+    plt.savefig(os.path.join('static', 'HRsta.png'))
     plt.clf()
     print("Heart Rate Detection Complete!")
     return bpm_out

@@ -163,7 +163,7 @@ def timeTrends(emotion_list, emotions, duration):
   plt.yticks(range(0, len(emotion_list)), emotion_list)
   plt.xlabel("Time (seconds)")
   plt.xticks(rotation=15)
-  plt.savefig(os.path.join('static', 'Emot.PNG'))
+  plt.savefig(os.path.join('static', 'Emot.png'))
   plt.clf()
 
 def getEmfromVideo(filepath, duration):

@@ -28,7 +28,7 @@ def getEmotionEyebrowDetection(path, duration, fps, frame_count):
   plt.axhline(y=0.65, color="gold", linestyle = "--", linewidth=1.1, label="Medium stress threshold")
   plt.title("Facial Movement Detection")
   plt.legend()
-  plt.savefig(os.path.join('static', 'FacialMovement.PNG'))
+  plt.savefig(os.path.join('static', 'FacialMovement.png'))
   plt.clf()
   print("Lip and Eyebrow Analysis Complete!\n")
   return stress_value_list
@@ -91,7 +91,7 @@ def converter(emotion_array, bpm_list, stress_value_list, duration):
   plt.ylim([0, 3])
   plt.legend()
   #plt.show()
-  plt.savefig(os.path.join('static', 'StressGraph.PNG'))
+  plt.savefig(os.path.join('static', 'StressGraph.png'))
   plt.clf()
   
 #--------------entire function
