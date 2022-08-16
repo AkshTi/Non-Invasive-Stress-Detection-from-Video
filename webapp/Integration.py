@@ -3,19 +3,19 @@ from PulseSampler import *
 from EDetect import *
 from Common import *
 
-def getEmotion(path, duration):
+def getEmotion(path, duration, PLOTSDIR):
   print("\nPROCESSING EMOTIONS")
   print("\t resizing videos.....")
   getSizes(path)
   print("\t running model.....")
-  emotion_lists = getEmfromVideo(path, duration)
+  emotion_lists = getEmfromVideo(path, duration, PLOTSDIR)
   print("\tEmotion Analysis Complete!\n")
   return emotion_lists
 
 # Emotion Function
 # Plots and releases a high/medium/lower stress 
 
-def getEmotionEyebrowDetection(path, duration, fps, frame_count):
+def getEmotionEyebrowDetection(path, duration, fps, frame_count, PLOTSDIR):
   print("\nEYEBROW AND LIP MOVEMENT ANALYSIS")
   print("\t calculating Stress Values")
   stress_value_list, stress_level_list, fps, total= get_frame(path, duration, fps, frame_count)
@@ -28,14 +28,14 @@ def getEmotionEyebrowDetection(path, duration, fps, frame_count):
   plt.axhline(y=0.65, color="gold", linestyle = "--", linewidth=1.1, label="Medium stress threshold")
   plt.title("Facial Movement Detection")
   plt.legend()
-  plt.savefig(os.path.join('static', 'FacialMovement.png'))
+  plt.savefig(os.path.join(PLOTSDIR, 'stage2_facialmovement.png'))
   plt.clf()
   print("Lip and Eyebrow Analysis Complete!\n")
   return stress_value_list
 
 #-----converter
 
-def converter(emotion_array, bpm_list, stress_value_list, duration):
+def converter(emotion_array, bpm_list, stress_value_list, duration, PLOTSDIR):
   high_stress = 1.0
   semi_high_stress = 0.8
   medium_stress = 0.5
@@ -101,22 +101,32 @@ def converter(emotion_array, bpm_list, stress_value_list, duration):
   plt.ylim([0, 3])
   plt.legend()
   #plt.show()
-  plt.savefig(os.path.join('static', 'StressGraph.png'))
+  plt.savefig(os.path.join(PLOTSDIR, 'final_stressgraph.png'))
   plt.clf()
 
   return final_stress_score, heart_rates, emotions, facial_movements
   
 #--------------entire function
-def getStressed(videofilename, framedirectory):
+def getStressed(videofilename, FRAMESDIR, PLOTSDIR):
+
+
+
     duration, fps, frame_count = getMetrics(videofilename)
     
     # print('AAAAAA', duration, fps, frame_count)
-    getPicfromVideo(videofilename, framedirectory)
-    emotion_array = getEmotion(framedirectory, duration)
-    stress_value_list = stress_value_list = getEmotionEyebrowDetection(videofilename, duration, fps, frame_count)
-    bpm_list = getHeartRate(framedirectory, duration)
+    getPicfromVideo(videofilename, FRAMESDIR)
+
+    ### Stage 1 (EntireRec...)
+    emotion_array = getEmotion(FRAMESDIR, duration, PLOTSDIR)
+
+    ### Stage 2 (EDetect...)
+    stress_value_list = stress_value_list = getEmotionEyebrowDetection(videofilename, duration, fps, frame_count, PLOTSDIR)
+    
+    ### Stage 3 (PulseSampler...)
+    bpm_list = getHeartRate(FRAMESDIR, duration, PLOTSDIR)
+    
     print("Combining all 3 outputs into a final stress score.....")
-    final_stress_score, heart_rates, emotions, facial_movements = converter(emotion_array, bpm_list, stress_value_list, duration)
+    final_stress_score, heart_rates, emotions, facial_movements = converter(emotion_array, bpm_list, stress_value_list, duration, PLOTSDIR)
     print("Contactless Stress Detection Complete! Results are above ^")
 
     return final_stress_score, heart_rates, emotions, facial_movements

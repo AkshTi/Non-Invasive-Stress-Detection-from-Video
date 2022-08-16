@@ -1,15 +1,16 @@
 from Integration import *
 from flask import request
 from flask import Flask, render_template, jsonify, request
-import os
+import os, json
 from werkzeug.utils import secure_filename
-import tempfile
+import tempfile, datetime
 import matplotlib
 matplotlib.use('Agg')
 
 app = Flask(__name__)
 
-os.makedirs(os.path.join(app.instance_path,'videofiles'),exist_ok=True)
+OUTDIR = app.instance_path
+os.makedirs(OUTDIR, exist_ok=True)
 
 
 #app.config['UPLOAD_FOLDER'] = IMAGE_FOLDER
@@ -29,41 +30,42 @@ def ReturnJSON():
 
 @app.route('/stress', methods=['POST'])
 def detect_stress():
-    print('GGGGGG')
+    print('** NEW VIDEO UPLOADED **')
     if request.method == 'POST':
 
+        ### CREATE AND GRAB FOLDER STRUCTURE
+        USERDIR, FRAMESDIR, PLOTSDIR = createOutputFolders(OUTDIR)
+
         f = request.files['file']
+        videofilename = 'uploaded.webm'
+        videopath = os.path.join(USERDIR, videofilename)
+        f.save(videopath)
 
-        handle, videofilename = tempfile.mkstemp(suffix='.webm', dir=os.path.join(app.instance_path, 'videofiles'))
-        f.save(videofilename)
+        if videopath.endswith('webm'): # ALWAYS THE CASE SINCE ONLY WEBM is SUPPORTED IN JS
+          convertedvideopath = videopath.replace('.webm', '.mp4')
+          os.system('ffmpeg -i ' + videopath + ' -filter:v fps=30 ' + convertedvideopath)
+          videopath = convertedvideopath
 
 
+        final_stress_score, heart_rates, emotions, facial_movements = getStressed( videopath, 
+                                                                                   FRAMESDIR,
+                                                                                   PLOTSDIR)
 
-        framedirectory = tempfile.mkdtemp(prefix=videofilename, dir=os.path.join(app.instance_path, 'frames'))
- 
-
-        if videofilename.endswith('webm'):
-          os.system('ffmpeg -i ' + videofilename + ' -filter:v fps=30 ' + videofilename.replace('.webm', '.mp4'))
-
-        videofilename = videofilename.replace('.webm', '.mp4')
-
-        final_stress_score, heart_rates, emotions, facial_movements = getStressed( videofilename, 
-                                          framedirectory)
-
-        #image1=os.path.join('static', 'Emot.PNG')
-        #image2=os.path.join('static', 'FacialMovement.PNG')
-        #image3=os.path.join('static', 'HRsta.PNG')
-        #image4=os.path.join('static', 'StressGraph.PNG')
-        #return render_template("result.html", image1 = image1, image2 = image2, image3 = image3, image4 = image4 )
         data = {
             "StressText" : "Your Stress is .....",
             "StressScore": final_stress_score,
             "HeartRates": [float(v) for v in heart_rates],
             "Emotions": [float(v) for v in emotions],
-            "FacialMovements": [float(v) for v in facial_movements],
-            "ImageURL" :  os.path.join('static', 'StressGraph.png')
+            "FacialMovements": [float(v) for v in facial_movements]
         }  
-        return jsonify(data)
+        jsonoutput = json.dumps(data)
+
+
+        jsonfile = os.path.join(USERDIR, 'results.json')
+        with open(jsonfile, 'w') as f:
+          f.write(jsonoutput)
+
+        return jsonify(data) # we need the flask response here
 
 @app.route('/stresstest', methods=['POST'])
 def stresstest():

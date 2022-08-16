@@ -361,7 +361,7 @@ def getVidLength(path):
   return frame_count//fps    
 
 #Method
-def getHeartRate(path, duration):
+def getHeartRate(path, duration, PLOTSDIR):
     import warnings
     print("\nCALCULATING HEART RATES")
     resume = r"s_Drop_3d_32_14.tar"
@@ -379,7 +379,7 @@ def getHeartRate(path, duration):
         print("=> no checkpoint found at '{}'".format(resume))
     end_indexes_test = []
     # print(path)
-    fr_list = glob.glob(path + os.sep + '*.jpg')
+    fr_list = sorted(glob.glob(path + os.sep + '*.jpg'))
     # print("fr_list: ", fr_list)
     end_indexes_test.append(len(fr_list))
     end_indexes_test = [0, *end_indexes_test]
@@ -418,6 +418,7 @@ def getHeartRate(path, duration):
     yr = (yr - np.mean(yr)) / np.std(yr)
 
     outputs = np.array(outputs)
+    print('OUTPUTS', len(outputs))
     bpm_out = []
     bpm_out2 = []
     win = 255
@@ -428,7 +429,7 @@ def getHeartRate(path, duration):
             bpm_out.append(mmm['bpm'])
             bpm_out2.append(30/(win/len(peaks_out))*win)
     bpm_out, s, m = remove_outliers(bpm_out)
-    print("\tGraphing Heart Rate.....")
+    print("\tGraphing Heart Rate.....", len(bpm_out))
     outputs = torch.tensor(outputs)
     plt.subplots_adjust(right=0.7)
     x = np.linspace(0, duration, len(bpm_out))
@@ -441,7 +442,7 @@ def getHeartRate(path, duration):
     plt.xlabel('Time (seconds)', fontsize='large')
     #plt.grid()
     #plt.show()
-    plt.savefig(os.path.join('static', 'HRsta.png'))
+    plt.savefig(os.path.join(PLOTSDIR, 'stage3_heartrate.png'))
     plt.clf()
     print("Heart Rate Detection Complete!")
     return bpm_out

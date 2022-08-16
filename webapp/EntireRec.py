@@ -127,7 +127,7 @@ def getEmotions(directory):
   mapping = {"anger":0, 'contempt':1, "disgust":2, 'fear':3, 'happy':4, "neutral":5, 'sadness':6, "surprise":7}
   #mapping = {0: "anger", 1:'neutral', 2: "disgust", 3:'fear', 4:'happy', 5:"sadness", 6:'surprise'}
   data = []
-  for filename in os.listdir(directory):
+  for filename in sorted(os.listdir(directory)):
     if os.path.isfile(os.path.join(directory, filename)):
       image = cv2.imread(os.path.join(directory, filename))
       image = cv2.resize(image, (48, 48))
@@ -153,7 +153,7 @@ def getTimeList(emotions):
     emotion_lists.append(emotions[i])
   return emotion_lists, len(emotions)
 
-def timeTrends(emotion_list, emotions, duration):
+def timeTrends(emotion_list, emotions, duration, PLOTSDIR):
   #duration, fps, frame_count = getMetrics(os.path.join())
   emotion_lists, length = getTimeList(emotions)
   times = list(range(0, length))
@@ -163,10 +163,10 @@ def timeTrends(emotion_list, emotions, duration):
   plt.yticks(range(0, len(emotion_list)), emotion_list)
   plt.xlabel("Time (seconds)")
   plt.xticks(rotation=15)
-  plt.savefig(os.path.join('static', 'Emot.png'))
+  plt.savefig(os.path.join(PLOTSDIR, 'stage1_emotions.png'))
   plt.clf()
 
-def getEmfromVideo(filepath, duration):
+def getEmfromVideo(filepath, duration, PLOTSDIR):
   #emotion_list = ["neutral", "anger", "disgust", "fear", "happy", "sadness", "surprise"]
   emotion_list= ["anger", "contempt", "disgust", "fear", "happy", "neutral", "sadness", "surprise"]
   emotion_count = [0, 0, 0, 0, 0, 0, 0, 0]
@@ -175,7 +175,7 @@ def getEmfromVideo(filepath, duration):
     int_tensor = emotions[i]
     emotion_count[int_tensor] +=1
   emotion_lists, length = getTimeList(emotions)
-  timeTrends(emotion_list, emotions, duration)
+  timeTrends(emotion_list, emotions, duration, PLOTSDIR)
   return emotion_lists
 
 

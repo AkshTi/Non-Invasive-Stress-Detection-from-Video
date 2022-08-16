@@ -10,8 +10,8 @@ import pandas as pd
 from scipy.signal import resample
 import math
 import argparse
-import glob
-import time
+import glob, tempfile
+import time, datetime
 import torch.nn.parallel
 import torch.backends.cudnn as cudnn
 import torch.optim
@@ -50,7 +50,7 @@ def getPicfromVideo(videofilename, framedirectory):
   for i in range(frame_count):
     hasFrames,image = vidcap.read()
     if hasFrames:
-        path = os.path.join(framedirectory, "image"+str(i)+".jpg")
+        path = os.path.join(framedirectory, str(i).zfill(3)+".jpg")
         cv2.imwrite(path, image)     # save frame as JPG file
 
 
@@ -81,3 +81,16 @@ def getMetrics(videofilename):
   frame_count = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
   duration = frame_count // fps
   return duration, fps, frame_count
+
+
+def createOutputFolders(OUTDIR):
+  USERDIR = tempfile.mkdtemp(prefix=str(datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S'))+'___', dir=OUTDIR)
+
+  FRAMESDIR = os.path.join(USERDIR, 'frames')
+  os.makedirs(FRAMESDIR, exist_ok=True)
+
+  PLOTSDIR = os.path.join(USERDIR, 'plots')
+  os.makedirs(PLOTSDIR, exist_ok=True)
+
+  return USERDIR, FRAMESDIR, PLOTSDIR
+
