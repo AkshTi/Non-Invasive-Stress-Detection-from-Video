@@ -25,7 +25,7 @@ shutil.copy(VIDEO, videopath)
 
 if videopath.endswith('webm'): # ALWAYS THE CASE SINCE ONLY WEBM is SUPPORTED IN JS
   convertedvideopath = videopath.replace('.webm', '.mp4')
-  os.system('ffmpeg -i ' + videopath + ' -filter:v fps=30 ' + convertedvideopath)
+  os.system('ffmpeg -i ' + videopath + ' -filter:v fps=30 -b:v 3M  -minrate 3M -maxrate 3M  -bufsize 3M ' + convertedvideopath)
   videopath = convertedvideopath
 
 
