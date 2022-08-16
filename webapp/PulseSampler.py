@@ -426,7 +426,11 @@ def getHeartRate(path, duration, PLOTSDIR):
         if (i<len(outputs)) and (i+win<len(outputs)):
             peaks_out, _ = find_peaks(yr[i:i + win], height=0.95)
             _, mmm = hp.process(yr[i:i + win], 30.0)
-            bpm_out.append(mmm['bpm'])
+            
+            if mmm['bpm'] > 0:
+                # print('i',i, mmm)
+                bpm_out.append(mmm['bpm'])
+                
             bpm_out2.append(30/(win/len(peaks_out))*win)
     bpm_out, s, m = remove_outliers(bpm_out)
     print("\tGraphing Heart Rate.....", len(bpm_out))
