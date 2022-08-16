@@ -52,7 +52,6 @@ def detect_stress():
                                                                                    PLOTSDIR)
 
         data = {
-            "StressText" : "Your Stress is .....",
             "StressScore": final_stress_score,
             "HeartRates": [float(v) for v in heart_rates],
             "Emotions": [float(v) for v in emotions],
