@@ -9,11 +9,11 @@ After cloning this repository, use the following commands to install the CONDA e
 ```
 $ cd webapp
 
-$ conda create env -f environment.yml && conda activate stress
+$ conda env create -f environment.yml && conda activate stress
 
 or for GPU support
 
-$ conda create env -f gpu.yml && conda activate STRESSGPU
+$ conda env create -f gpu.yml && conda activate STRESSGPU
 
 $ curl -L -o weights.hdf5 https://www.dropbox.com/s/9sdgly1x56uh7j8/weights.hdf5?dl=1
 $ curl -L -o landmarks.dat https://www.dropbox.com/s/ra6pkpytt6cryyq/landmarks.dat?dl=1
