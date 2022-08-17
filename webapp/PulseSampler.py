@@ -431,7 +431,7 @@ def getHeartRate(path, duration, PLOTSDIR):
                 # print('i',i, mmm)
                 bpm_out.append(mmm['bpm'])
                 
-            bpm_out2.append(30/(win/len(peaks_out))*win)
+            # bpm_out2.append(30/(win/len(peaks_out))*win)
     bpm_out, s, m = remove_outliers(bpm_out)
     print("\tGraphing Heart Rate.....", len(bpm_out))
     outputs = torch.tensor(outputs)
