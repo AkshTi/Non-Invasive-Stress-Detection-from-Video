@@ -76,6 +76,16 @@ def get_frame(directory, duration, fps, frame_count):
         fps = int(cap.get(cv2.CAP_PROP_FPS))
         ret,frame = cap.read()
         frame = cv2.flip(frame,1)
+      
+        # if xres is larger than yres, remove x boundaries 
+        yres, xres, _ = frame.shape 
+        if xres > yres:
+          crop = (xres - yres) // 2
+          frame = frame[:,crop:-crop,:]
+        if yres > xres:
+          crop = (yres - xres) // 2
+          frame = frame[crop:-crop,:,:]
+
         if frame is not None:
           frame = imutils.resize(frame, width=500,height=500)
         

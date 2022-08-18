@@ -50,9 +50,17 @@ def getPicfromVideo(videofilename, framedirectory):
   for i in range(frame_count):
     hasFrames,image = vidcap.read()
     if hasFrames:
+        # if xres is larger than yres, remove x boundaries 
+        yres, xres, _ = image.shape 
+        if xres > yres:
+          crop = (xres - yres) // 2
+          image = image[:,crop:-crop,:]
+        if yres > xres:
+          crop = (yres - xres) // 2
+          image = image[crop:-crop,:,:]
+
         path = os.path.join(framedirectory, str(i).zfill(3)+".jpg")
         cv2.imwrite(path, image)     # save frame as JPG file
-
 
   # def getFrame(sec):
   #     vidcap.set(cv2.CAP_PROP_POS_MSEC,sec*1000)
