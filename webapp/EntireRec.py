@@ -40,78 +40,46 @@ import tensorflow as tf
 from tensorflow import keras
 from keras.models import load_model
 warnings.filterwarnings("ignore")
+import torch.nn.functional as F
+from torch.autograd import Variable
+from skimage import io
 from Common import *
+from skimage.transform import resize
 
-class ConvNet(nn.Module):
-    def __init__(self):
-        super(ConvNet, self).__init__()
-  
-        self.conv1 = nn.Conv2d(1, 32, 5, padding=0) 
-        self.conv2 = nn.Conv2d(32, 64, 5, padding=0)        
-        self.pool1 = nn.MaxPool2d(2, 2)
-        self.conv3 = nn.Conv2d(64, 128, 3, padding=0)
-        self.drop1 = nn.Dropout2d(p=0.3)
-        self.pool2 = nn.MaxPool2d(2, 2)
-        self.fc1 = nn.Linear(128 * 9 * 9, 2048)
-        self.drop2 = nn.Dropout2d(p=0.5)
-        self.fc2 = nn.Linear(2048, 1024)
-        self.drop3 = nn.Dropout2d(p=0.5)
-        self.fc3 = nn.Linear(1024, 8)
-        self.bn1 = nn.BatchNorm2d(32)
-        self.bn2 = nn.BatchNorm2d(64)
-        self.bn3 = nn.BatchNorm2d(128)
-        self.bn4 = nn.BatchNorm1d(2048)
-        self.bn5 = nn.BatchNorm1d(1024)
-        
+cfg = {
+    'VGG11': [64, 'M', 128, 'M', 256, 256, 'M', 512, 512, 'M', 512, 512, 'M'],
+    'VGG13': [64, 64, 'M', 128, 128, 'M', 256, 256, 'M', 512, 512, 'M', 512, 512, 'M'],
+    'VGG16': [64, 64, 'M', 128, 128, 'M', 256, 256, 256, 'M', 512, 512, 512, 'M', 512, 512, 512, 'M'],
+    'VGG19': [64, 64, 'M', 128, 128, 'M', 256, 256, 256, 256, 'M', 512, 512, 512, 512, 'M', 512, 512, 512, 512, 'M'],
+}
+
+class VGG(nn.Module):
+    def __init__(self, vgg_name):
+        super(VGG, self).__init__()
+        self.features = self._make_layers(cfg[vgg_name])
+        self.classifier = nn.Linear(512, 7)
+
     def forward(self, x):
-        x = self.conv1(x)
-        x = F.relu(x)
-        x = self.bn1(x)
-        x = self.conv2(x)
-        x = F.relu(x)
-        x = self.bn2(x)
-        x = self.pool1(x)
-        x = self.conv3(x)
-        x = F.relu(x)
-        x = self.bn3(x)
-        x = self.drop1(x)
-        x = self.pool2(x)
-        x = x.view(-1, 128 * 9 * 9)
-        x = self.fc1(x)
-        x = F.relu(x)
-        x = self.bn4(x)
-        x = self.drop2(x)
-        x = self.fc2(x)
-        x = F.relu(x)
-        x = self.bn5(x)
-        x = self.drop3(x)
-        x = self.fc3(x)
-        return x
+        out = self.features(x)
+        out = out.view(out.size(0), -1)
+        out = F.dropout(out, p=0.5, training=self.training)
+        out = self.classifier(out)
+        return out
+
+    def _make_layers(self, cfg):
+        layers = []
+        in_channels = 3
+        for x in cfg:
+            if x == 'M':
+                layers += [nn.MaxPool2d(kernel_size=2, stride=2)]
+            else:
+                layers += [nn.Conv2d(in_channels, x, kernel_size=3, padding=1),
+                           nn.BatchNorm2d(x),
+                           nn.ReLU(inplace=True)]
+                in_channels = x
+        layers += [nn.AvgPool2d(kernel_size=1, stride=1)]
+        return nn.Sequential(*layers)
     
-def weight(labels):
-    scale = torch.FloatTensor(8)
-    for i in range(8):
-        scale[i] = ((labels==i).sum())
-    return scale.max() / scale
-  
-class custom_dataset(torch.utils.data.dataset.Dataset):
-    def __init__(self, data, labels, transforms=None):
-        self.data = data
-        self.labels = labels
-        self.transforms = transforms
-
-    def __getitem__(self, index):   
-        dat = self.data[index]
-        if self.transforms is not None:
-            dat = self.transforms(dat)
-        transform = transforms.Compose([transforms.ToTensor(),
-transforms.Normalize((0.5,), (0.5,))
-])  
-        return (dat,self.labels[index])
-   
-    def __len__(self):
-        return len(self.data)
-
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 # model = ConvNet().to(device)
 
@@ -124,6 +92,7 @@ def getSizes(directory):
       img.save(f_img)
 
 def getEmotions(directory):
+  
   mapping = {"anger":0, 'contempt':1, "disgust":2, 'fear':3, 'happy':4, "neutral":5, 'sadness':6, "surprise":7}
   #mapping = {0: "anger", 1:'neutral', 2: "disgust", 3:'fear', 4:'happy', 5:"sadness", 6:'surprise'}
   data = []
