@@ -92,44 +92,74 @@ def getSizes(directory):
       img.save(f_img)
 
 def getEmotions(directory):
-  
-  mapping = {"anger":0, 'contempt':1, "disgust":2, 'fear':3, 'happy':4, "neutral":5, 'sadness':6, "surprise":7}
-  #mapping = {0: "anger", 1:'neutral', 2: "disgust", 3:'fear', 4:'happy', 5:"sadness", 6:'surprise'}
+  def rgb2gray(rgb):
+    return np.dot(rgb[...,:3], [0.299, 0.587, 0.114])
+
+  predictionList_num = []
+  cut_size = 44
+  device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+  transform_test = transforms.Compose([
+    transforms.TenCrop(cut_size),
+    transforms.Lambda(lambda crops: torch.stack([transforms.ToTensor()(crop) for crop in crops])),
+  ])
+
+  predictionList_name = []
+  class_names = ['Anger', 'Disgust', 'Fear', 'Happy', 'Sad', 'Surprise', 'Neutral']
   data = []
+  predictionList_num = []
   for filename in sorted(os.listdir(directory)):
-    if os.path.isfile(os.path.join(directory, filename)):
-      image = cv2.imread(os.path.join(directory, filename))
-      image = cv2.resize(image, (48, 48))
-      data.append(image)
+    path = os.path.join(directory, filename)
+    if os.path.isfile(path):
+        raw_img = io.imread(path)
+        gray = rgb2gray(raw_img)
+        gray = resize(gray, (48,48), mode='symmetric').astype(np.uint8)
+
+        img = gray[:, :, np.newaxis]
+
+        img = np.concatenate((img, img, img), axis=2)
+        img = Image.fromarray(img)
+        inputs = transform_test(img)
+        ncrops, c, h, w = np.shape(inputs)
+        inputs = inputs.view(-1, c, h, w)
+        inputs = inputs.cuda()
+        inputs = Variable(inputs, volatile=True)
+        data.append(inputs)
+        
+#       image = cv2.imread(os.path.join(directory, filename))
+#       image = cv2.resize(image, (48, 48))
+#       data.append(image)
+
+  net = VGG('VGG19')
+  checkpoint = torch.load("PrivateTest_model.t7", map_location = device)
+  net.load_state_dict(checkpoint['net'])
+  net.cuda()
+  net.eval()
   model = load_model("weights.hdf5")
   predictionList = []
+    
   for image in data:
-    image = image.reshape(1, 48, 48, 3)
-    prediction = model.predict(image)
-    prediction = np.argmax(prediction)
-    predictionList.append(prediction)
-  return predictionList
+    outputs = net(inputs)
+    outputs_avg = outputs.view(ncrops, -1).mean(0)  # avg over crops
+    score = F.softmax(outputs_avg)
+    _, predicted = torch.max(outputs_avg.data, 0)
+    predictionList_num.append(int(predicted.cpu().numpy()))
+    predictionList_name.append(class_names[int(predicted.cpu().numpy()
+  return predictionList_num, predictionList_name
 
 def getMax(emotion_count, emotion_list):
   sns.color_palette("husl", 8)
   sns.barplot(emotion_list, emotion_count, palette = "husl")
   plt.xticks(rotation=15)
 
-def getTimeList(emotions):
-  length = 0
-  emotion_lists = []
-  for i in range(len(emotions)):
-    emotion_lists.append(emotions[i])
-  return emotion_lists, len(emotions)
-
 def timeTrends(emotion_list, emotions, duration, PLOTSDIR):
   #duration, fps, frame_count = getMetrics(os.path.join())
-  emotion_lists, length = getTimeList(emotions)
-  times = list(range(0, length))
-  xranges = np.linspace(0, duration, length)
-  sns.scatterplot(x=xranges, y=emotion_lists, palette = "Set2")
+#   emotion_lists, length = getTimeList(emotions)
+  times = list(range(0, len(emotions)))
+  xranges = np.linspace(0, duration, len(emotions))
+  sns.scatterplot(x=xranges, y=emotions, palette = "Set2")
   plt.title("Emotion Detection (By Frame)")
-  plt.yticks(range(0, len(emotion_list)), emotion_list)
+  #plt.yticks(range(0, len(emotion_list)), emotion_list)
+  plt.yticks([0, 1, 2, 3, 4, 5, 6], emotion_list)
   plt.xlabel("Time (seconds)")
   plt.xticks(rotation=15)
   plt.savefig(os.path.join(PLOTSDIR, 'stage1_emotions.png'))
@@ -137,8 +167,8 @@ def timeTrends(emotion_list, emotions, duration, PLOTSDIR):
 
 def getEmfromVideo(filepath, duration, PLOTSDIR):
   #emotion_list = ["neutral", "anger", "disgust", "fear", "happy", "sadness", "surprise"]
-  emotion_list= ["anger", "contempt", "disgust", "fear", "happy", "neutral", "sadness", "surprise"]
-  emotion_count = [0, 0, 0, 0, 0, 0, 0, 0]
+  emotion_list= ['Anger', 'Disgust', 'Fear', 'Happy', 'Sad', 'Surprise', 'Neutral']rise"]
+  emotion_count = [0, 0, 0, 0, 0, 0, 0]
   emotions = getEmotions(filepath)
   for i in range(len(emotions)):
     int_tensor = emotions[i]
