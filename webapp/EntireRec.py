@@ -1,43 +1,18 @@
 from scipy.signal import butter, lfilter
 import torch
-from torch.utils.data import Sampler
-import glob
 import os
-from torch.utils.data import Dataset
 import torch
 import numpy as np
-import pandas as pd
-from scipy.signal import resample
-import math
-import argparse
-import glob
-import time
 import torch.nn.parallel
-import torch.backends.cudnn as cudnn
 import torch.optim
 import torch.utils.data
 import torchvision.transforms as transforms
-import torchvision.datasets as datasets
 import matplotlib.pyplot as plt
-import json
-from scipy.signal import find_peaks
-from scipy.stats import pearsonr
-import heartpy as hp
 import torch.nn as nn
 import torch.nn.functional as F
-import torch.optim as optim
-import cv2
-import imghdr
 from PIL import Image
-import itertools
 import seaborn as sns
-from scipy.spatial import distance as dist
-import imutils
-from imutils import face_utils
-import matplotlib.image as mpimg
 import warnings
-import tensorflow as tf
-from tensorflow import keras
 from keras.models import load_model
 warnings.filterwarnings("ignore")
 import torch.nn.functional as F
@@ -153,7 +128,6 @@ def getMax(emotion_count, emotion_list):
 
 def timeTrends(emotion_list, emotions, duration, PLOTSDIR):
   #duration, fps, frame_count = getMetrics(os.path.join())
-#   emotion_lists, length = getTimeList(emotions)
   times = list(range(0, len(emotions)))
   xranges = np.linspace(0, duration, len(emotions))
   sns.scatterplot(x=xranges, y=emotions, palette = "Set2")
@@ -167,13 +141,11 @@ def timeTrends(emotion_list, emotions, duration, PLOTSDIR):
 
 def getEmfromVideo(filepath, duration, PLOTSDIR):
   #emotion_list = ["neutral", "anger", "disgust", "fear", "happy", "sadness", "surprise"]
-  emotion_list= ['Anger', 'Disgust', 'Fear', 'Happy', 'Sad', 'Surprise', 'Neutral']rise"]
+  emotion_list= ['Anger', 'Disgust', 'Fear', 'Happy', 'Sad', 'Surprise', 'Neutral']
   emotion_count = [0, 0, 0, 0, 0, 0, 0]
-  emotions = getEmotions(filepath)
-  for i in range(len(emotions)):
-    int_tensor = emotions[i]
-    emotion_count[int_tensor] +=1
-  emotion_lists, length = getTimeList(emotions)
+  emotions, emotion_lists = getEmotions(filepath)
+  print(emotions)
+  #emotion_lists, length = getTimeList(emotions)
   timeTrends(emotion_list, emotions, duration, PLOTSDIR)
   return emotion_lists
 
