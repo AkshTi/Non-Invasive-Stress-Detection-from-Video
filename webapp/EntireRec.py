@@ -85,7 +85,7 @@ def getEmotions(directory):
     if os.path.isfile(path):
         raw_img = Image.open(path)
         gray = rgb2gray(raw_img)
-        gray = raw_img.resize((227,227))
+        gray = raw_img.resize((48,48))
 
         img = gray[:, :, np.newaxis]
 
