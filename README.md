@@ -17,6 +17,7 @@ $ conda env create -f gpu.yml && conda activate STRESSGPU
 
 $ curl -L -o weights.hdf5 https://www.dropbox.com/s/9sdgly1x56uh7j8/weights.hdf5?dl=1
 $ curl -L -o landmarks.dat https://www.dropbox.com/s/ra6pkpytt6cryyq/landmarks.dat?dl=1
+$ curl -L -o model.t7 https://www.dropbox.com/s/xx8evzrt2cwpg5k/model.t7?dl=1
 ```
 
 Now let's start the server for real:

@@ -111,7 +111,7 @@ def getEmotions(directory):
 #       data.append(image)
 
   net = VGG('VGG19')
-  checkpoint = torch.load("PrivateTest_model.t7", map_location = device)
+  checkpoint = torch.load("model.t7", map_location = device)
   net.load_state_dict(checkpoint['net'])
   net.cuda()
   net.eval()
