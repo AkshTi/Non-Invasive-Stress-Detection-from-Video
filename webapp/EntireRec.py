@@ -61,7 +61,10 @@ def getSizes(directory):
     if os.path.isfile(os.path.join(directory, file)):
       f_img = os.path.join(directory, file)
       img = Image.open(f_img)
-      img = img.resize((227,227))
+      # img = img.resize((227,227))
+      img =  cv2.resize(np.array(img), dsize=(227, 227), interpolation=cv2.INTER_CUBIC)
+
+      img = Image.fromarray(img.astype(np.uint8))
       img.save(f_img)
 
 def getEmotions(directory):
@@ -83,15 +86,19 @@ def getEmotions(directory):
   for filename in sorted(os.listdir(directory)):
     path = os.path.join(directory, filename)
     if os.path.isfile(path):
+        # print(path)
         raw_img = Image.open(path)
         raw_img = np.array(raw_img)
+        # print(raw_img, raw_img.shape)
         gray = rgb2gray(raw_img)
-        gray = raw_img.resize((48,48))
-
+        # print(gray)
+        # gray.resize((48,48))
+        gray =  cv2.resize(gray, dsize=(48, 48), interpolation=cv2.INTER_CUBIC)
+        # print(gray.shape)
         img = gray[:, :, np.newaxis]
 
         img = np.concatenate((img, img, img), axis=2)
-        img = Image.fromarray(img)
+        img = Image.fromarray(img.astype(np.uint8))
         inputs = transform_test(img)
         ncrops, c, h, w = np.shape(inputs)
         inputs = inputs.view(-1, c, h, w)
