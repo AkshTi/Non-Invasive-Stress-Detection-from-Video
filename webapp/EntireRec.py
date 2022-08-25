@@ -17,9 +17,7 @@ from keras.models import load_model
 warnings.filterwarnings("ignore")
 import torch.nn.functional as F
 from torch.autograd import Variable
-from skimage import io
 from Common import *
-from skimage.transform import resize
 
 cfg = {
     'VGG11': [64, 'M', 128, 'M', 256, 256, 'M', 512, 512, 'M', 512, 512, 'M'],
