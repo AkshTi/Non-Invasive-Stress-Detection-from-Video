@@ -70,7 +70,7 @@ def converter(emotion_array, bpm_list, stress_value_list, duration, PLOTSDIR):
 
   class_names = ['Anger', 'Disgust', 'Fear', 'Happy', 'Sad', 'Surprise', 'Neutral']
   mapping = {"Anger":0, "Disgust":1, "Fear":2, "Happy":3, "Sad":4, "Surprise":5, "Neutral":6}
-  emotion_array = [mapping[i] for i in emotion_arrays]
+  emotion_array = [mapping[i] for i in emotion_array]
   emotion_dict = {0:no_stress, 1: high_stress, 2: medium_stress, 3: high_stress, 4 : semi_high_stress, 5: no_stress, 6: low_stress, 7: semi_high_stress}
   heart_rate_dict = {110: high_stress, 100: semi_high_stress, 90: medium_stress, 80: low_stress, 40: no_stress}
   measure_skip = len(emotion_array) // len(bpm_list)
