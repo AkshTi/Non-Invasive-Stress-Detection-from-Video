@@ -4,7 +4,7 @@ from Integration import *
 
 import os, sys, shutil
 from werkzeug.utils import secure_filename
-import tempfile
+import tempfile, time
 import matplotlib
 matplotlib.use('Agg')
 
@@ -28,10 +28,13 @@ if videopath.endswith('webm'): # ALWAYS THE CASE SINCE ONLY WEBM is SUPPORTED IN
   os.system('ffmpeg -i ' + videopath + ' -filter:v fps=30 -b:v 3M  -minrate 3M -maxrate 3M  -bufsize 3M ' + convertedvideopath)
   videopath = convertedvideopath
 
-
+t0 = time.time()
 final_stress_score, heart_rates, emotions, facial_movements = getStressed( videopath, 
                                                                            FRAMESDIR,
                                                                            PLOTSDIR)
+
+print('***PREDICTION TIME***', time.time()-t0, 'seconds..')
+
 
 data = {
     "StressText" : "Your Stress is .....",
