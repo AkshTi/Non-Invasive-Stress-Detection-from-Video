@@ -1,7 +1,7 @@
 from Integration import *
 from flask import request
 from flask import Flask, render_template, jsonify, request
-import os, json
+import os, json, time
 from werkzeug.utils import secure_filename
 import tempfile, datetime
 import matplotlib
@@ -46,10 +46,12 @@ def detect_stress():
           os.system('ffmpeg -i ' + videopath + ' -filter:v fps=30 -b:v 3M  -minrate 3M -maxrate 3M  -bufsize 3M ' + convertedvideopath)
           videopath = convertedvideopath
 
-
+        t0 = time.time()
         final_stress_score, heart_rates, emotions, facial_movements = getStressed( videopath, 
                                                                                    FRAMESDIR,
                                                                                    PLOTSDIR)
+        print('***PREDICTION TIME***', time.time()-t0, 'seconds..')
+
 
         data = {
             "StressScore": final_stress_score,
