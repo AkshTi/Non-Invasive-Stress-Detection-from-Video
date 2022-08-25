@@ -143,7 +143,7 @@ def getEmotions(directory):
     score = F.softmax(outputs_avg)
     _, predicted = torch.max(outputs_avg.data, 0)
     predictionList_num.append(int(predicted.cpu().numpy()))
-    predictionList_name.append(class_names[int(predicted.cpu().numpy()
+    predictionList_name.append(class_names[int(predicted.cpu().numpy())]
   return predictionList_num, predictionList_name
 
 def getMax(emotion_count, emotion_list):
