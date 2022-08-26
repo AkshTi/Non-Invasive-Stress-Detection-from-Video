@@ -21,6 +21,7 @@ def getHR(instance, PLOTSDIR):
   videoWidth = 160
   videoHeight = 120
   videoChannels = 3
+  videoFrameRate = 30
 
   #print(f"Metrics: Height: {videoHeight}, FPS {videoFrameRate}, Width: {videoWidth}")
   # Color Magnification Parameters
