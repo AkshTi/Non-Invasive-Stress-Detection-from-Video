@@ -2,7 +2,7 @@ from EntireRec import *
 from PulseSampler import *
 from EDetect import *
 from Common import *
-
+from EVM import *
 flag = false
 
 def getEmotion(path, duration, PLOTSDIR):
