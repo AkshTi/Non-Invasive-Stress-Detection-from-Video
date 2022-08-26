@@ -3,6 +3,8 @@ from PulseSampler import *
 from EDetect import *
 from Common import *
 
+flag = false
+
 def getEmotion(path, duration, PLOTSDIR):
   print("\nPROCESSING EMOTIONS")
   print("\t resizing videos.....")
@@ -126,7 +128,10 @@ def getStressed(videofilename, FRAMESDIR, PLOTSDIR):
     stress_value_list = stress_value_list = getEmotionEyebrowDetection(videofilename, duration, fps, frame_count, PLOTSDIR)
     
     ### Stage 3 (PulseSampler...)
-    bpm_list = getHeartRate(FRAMESDIR, duration, PLOTSDIR)
+    if (flag):
+      bpm_list = getHeartRate(FRAMESDIR, duration, PLOTSDIR)
+    else:
+      bpm_list = getHR(FRAMESDIR, PLOTSDIR)
     
     print("Combining all 3 outputs into a final stress score.....")
     final_stress_score, heart_rates, emotions, facial_movements = converter(emotion_array, bpm_list, stress_value_list, duration, PLOTSDIR)
