@@ -17,6 +17,11 @@ html, body {
   font-family: oswald;
 }
 
+a {
+  color: cyan;
+  text-decoration: none;
+}
+
 #result {
   position:  absolute;
   top: 10px;
@@ -88,7 +93,7 @@ async function start(video) {
 
     record();
 
-    document.getElementById('result').innerHTML = 'Capturing webcam..<br><small>Please wait 7 seconds.</small>';
+    document.getElementById('result').innerHTML = '<strong>Capturing webcam..</strong><br><small>Please wait 7 seconds.</small>';
 
   } catch(error) {
     alert('WEBCAM NOT WORKING! '+error.message);
@@ -123,21 +128,24 @@ function record() {
           if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
             // Request finished. Do processing here.
             
-            res = xhr.response.StressScore;
+            // res = xhr.response.StressScore;
 
-            scores = '';
+            // scores = '';
 
-            for (var i in res) {
-              scores += res[i].toFixed(3)+'<br>';
-            }
+            // for (var i in res) {
+            //   scores += res[i].toFixed(3)+'<br>';
+            // }
 
-            document.getElementById('result').innerHTML = scores;
+            // document.getElementById('result').innerHTML = scores;
+
+            document.querySelector('#result').innerHTML = parse_results(xhr.response);
+
 
           }
         }
 
 
-        document.getElementById('result').innerHTML = 'Predicting..<br><small>Please wait 20 seconds.</small>';
+        document.getElementById('result').innerHTML = '<strong>Predicting..</strong><br><small>Please wait 20 seconds.</small>';
 
 
          xhr.send(fd);
@@ -153,6 +161,77 @@ function record() {
       // start_button.style.display = 'none';
 
 };
+
+
+
+
+function parse_results(json) {
+
+  stressscores = json.StressScore;
+
+  heartrates = json.HeartRates;
+
+  emotions = json.Emotions;
+
+  avg_stressscore = 0;
+
+  for (var i in stressscores) {
+    avg_stressscore += parseFloat(stressscores[i]);
+  }
+
+  avg_stressscore /= (stressscores.length-1); // ignore first zero
+  avg_stressscore = avg_stressscore.toFixed(2);
+
+
+  avg_hr = 0;
+
+  for (var i in heartrates) {
+    avg_hr += parseFloat(heartrates[i]);
+  }
+
+  avg_hr /= (heartrates.length); 
+  avg_hr = avg_hr.toFixed(2);
+
+  // lookup emotions
+  emodict = {
+    0: 'Anger',
+    1: 'Disgust',
+    2: 'Fear',
+    3: 'Happy',
+    4: 'Sad',
+    5: 'Surprise',
+    6: 'Neutral'
+  }
+
+  emos = [];
+
+  for (var i in emotions) {
+
+    if (emos.indexOf(emodict[emotions[i]]) == -1) {
+      emos.push(emodict[emotions[i]]);
+    }
+
+  }
+
+  stresslevel = 'LOW';
+  stresscolor = 'lime'
+  if (avg_stressscore >= 1.6) {
+    stresslevel = 'MEDIUM';
+    stresscolor = 'yellow';
+  } else if(avg_stressscore>=2.1) {
+    stresslevel = 'HIGH';
+    stresscolor = 'red';
+  }
+
+  outtext = '<strong>Stress Score: ' + avg_stressscore + '</strong><br>'
+  outtext += '<strong>Stress Level: <span style="color:' +stresscolor +'">'+ stresslevel+'</span></strong><br>';
+  outtext += 'Heart Rate: ' + avg_hr + '<br>';
+  outtext += 'Emotion: '+ emos.join(', ');
+
+  outtext += '<br><br><a href="javascript:window.location.reload();">Try again?</a>';
+
+  return outtext;
+}
 
 function stop() {
 
@@ -186,7 +265,7 @@ function stop() {
 
 <div id='camstuff' style='position: absolute;top: 0px;left: 0px;display:none;width:100%;height:100%'>
 <video id="video" style="width:100%;height:100" autoplay></video>
-<div id="result"></div>
+<div id="result" style='font-family:oswald'></div>
 </div>
 
 </body>
