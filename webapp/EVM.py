@@ -88,7 +88,7 @@ def getHR(instance, PLOTSDIR):
   bpm_list_actual = [i for i in bpm_list if i is not 0]
 
   num_zeroes = len(bpm_list)-len(bpm_list_actual)
-  prepend = [bpm_list_actual[i] for i in len(range(num_zeroes))]
+  prepend = [bpm_list_actual[i] for i in range(len(num_zeroes))]
   bpm_list_actual = prepend + bpm_list_actual
   time = len(bpm_list_actual)//videoFrameRate
   x = np.linspace(0, time, len(bpm_list_actual))
