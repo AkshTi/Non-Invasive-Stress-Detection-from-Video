@@ -3,7 +3,7 @@ from PulseSampler import *
 from EDetect import *
 from Common import *
 from EVM import *
-flag = false
+flag = False
 
 def getEmotion(path, duration, PLOTSDIR):
   print("\nPROCESSING EMOTIONS")

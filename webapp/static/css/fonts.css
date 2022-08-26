@@ -1,0 +1,19 @@
+
+@font-face {
+  font-family: 'oswald';
+  src: url(fonts/oswald_light.ttf);
+  }     
+
+
+@font-face {
+  font-family: 'oswald_medium';
+  src: url(fonts/oswald_medium.ttf);
+  }     
+
+@font-face {
+    font-family: icomoon;
+    src: url(fonts/icomoon.eot?a1ssps);
+    src: url(fonts/icomoon.eot?a1ssps#iefix) format("embedded-opentype"), url(fonts/icomoon.ttf?a1ssps) format("truetype"), url(fonts/icomoon.woff?a1ssps) format("woff"), url(fonts/icomoon.svg?a1ssps#icomoon) format("svg");
+    font-weight: 400;
+    font-style: normal
+}
