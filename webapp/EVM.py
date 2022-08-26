@@ -50,11 +50,13 @@ def getHR(instance, PLOTSDIR):
 
   i = 0
   bpm_list = []
-  
-  for file in os.listdir(instance):
-      frame = cv2.imread(os.path.join(instance, file))     
+  cropimage = []
+  for x in os.listdir(instance):
+    frame = cv2.imread(os.path.join(instance, x))
+    cropimage.append(cv2.resize(frame, (320, 240), interpolation = cv2.INTER_AREA))
+                     
+  for frame in cropimage:    
       detectionFrame = frame[videoHeight//2:realHeight-videoHeight//2, videoWidth//2:realWidth-videoWidth//2, :]
-
       # Construct Gaussian Pyramid
       videoGauss[bufferIndex] = buildGauss(detectionFrame, levels+1)[levels]
       fourierTransform = np.fft.fft(videoGauss, axis=0)
