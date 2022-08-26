@@ -2,28 +2,8 @@ import os
 import cv2
 import tqdm
 import matplotlib.pyplot as plt
+import numpy as np
 from tqdm import tqdm
-cap = cv2.VideoCapture(r"C:\Users\Pradeep.Tiwari\Non-Invasive-Stress-Detection-from-Video\tmpzo5jc6vq.mp4")
-# print(cap.get(cv2.CAP_PROP_FPS))
-
-def createfolder(videopath, videoname, width, height):
-  new_dir = os.path.join(videoname[:-4] + "resize")
-#   new_dir = os.path.join(videopaths, videoname[:-4] + "resize")
-  print("new_dir: ", new_dir)
-  if not os.path.exists(new_dir):
-    os.makedirs(new_dir)
-  cap = cv2.VideoCapture(videopath)
-  total_frames = cap.get(cv2.CAP_PROP_FRAME_COUNT)
-  count = 0
-  while count<total_frames:
-    ret, frame = cap.read()
-    frame = cv2.resize(frame, (height, width), interpolation = cv2.INTER_AREA)
-    #print(frame.shape)
-    cv2.imwrite(os.path.join(new_dir, "i"+str(count)+".png"), frame)
-    count+=1
-  return new_dir, cap.get(cv2.CAP_PROP_FPS), len(os.listdir(new_dir))
-
-createfolder(r"C:\Users\Pradeep.Tiwari\Non-Invasive-Stress-Detection-from-Video\tmpzo5jc6vq.mp4", "tmpzo5jc6vq.mp4", 320, 240)
 
 def buildGauss(frame, levels):
     pyramid = [frame]
@@ -32,15 +12,9 @@ def buildGauss(frame, levels):
         pyramid.append(frame)
     return pyramid
 
-import numpy as np
-import cv2
-import matplotlib.pyplot as plt
-import os
-
-
 # Helper Methods
 def getHR(instance):
-  videoFrameRate = 29.583333333333332
+
   # Webcam Parameters
   realWidth = 320
   realHeight = 240
@@ -75,8 +49,7 @@ def getHR(instance):
 
   i = 0
   bpm_list = []
-
-
+  
   for file in os.listdir(instance):
       frame = cv2.imread(os.path.join(instance, file))     
       detectionFrame = frame[videoHeight//2:realHeight-videoHeight//2, videoWidth//2:realWidth-videoWidth//2, :]
@@ -110,19 +83,13 @@ def getHR(instance):
 
   #generate a time in seconds
   bpm_list_actual = [i for i in bpm_list if i is not 0]
-  time = len(bpm_list_actual)//videoFrameRate
+
   num_zeroes = len(bpm_list)-len(bpm_list_actual)
-  empty_seconds= num_zeroes//videoFrameRate
-  x = np.linspace(empty_seconds, time+empty_seconds, len(bpm_list_actual))
+  prepend = [bpm_list_actual[i] for i in len(range(num_zeroes))]
+  bpm_list_actual = prepend + bpm_list_actual
+  time = len(bpm_list_actual)//videoFrameRate
+  x = np.linspace(0, time, len(bpm_list_actual))
   plt.plot(x, bpm_list_actual)
-  #print("avg: ", sum(bpm_list_actual)/len(bpm_list_actual))
   plt.show()
   print(bpm_list_actual)
   return bpm_list_actual
-
-#bpm_list_actual = getHR("/content/drive/MyDrive/Stress Detection/0801video.avi", "0801video.avi")
-#bpm_list_actual = getHR("/content/drive/MyDrive/Stress Detection/VIDEOS/Copy of Test1.mp4", "Copy of Test1.mp4")
-#bpm_list_actual = getHR("/content/drive/MyDrive/Stress Detection/VIDEOS/Copy of Test4.mp4", "Copy of Test4.mp4")
-#bpm_list_actual = getHR("/content/drive/MyDrive/Stress Detection/0805video.avi", "0805video.avi")
-#bpm_list_actual = getHR("/content/drive/MyDrive/Stress Detection/video.avi", "video.avi")
-bpm_list_actual = getHR(r"C:\Users\Pradeep.Tiwari\Non-Invasive-Stress-Detection-from-Video\webapp\tmpzo5jc6vqresize")
