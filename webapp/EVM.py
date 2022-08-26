@@ -13,7 +13,7 @@ def buildGauss(frame, levels):
     return pyramid
 
 # Helper Methods
-def getHR(instance):
+def getHR(instance, PLOTSDIR):
 
   # Webcam Parameters
   realWidth = 320
@@ -90,6 +90,8 @@ def getHR(instance):
   time = len(bpm_list_actual)//videoFrameRate
   x = np.linspace(0, time, len(bpm_list_actual))
   plt.plot(x, bpm_list_actual)
-  plt.show()
+  #plt.show()
   print(bpm_list_actual)
+  plt.savefig(os.path.join(PLOTSDIR, 'final_stressgraph.png'))
+  plt.clf()
   return bpm_list_actual
