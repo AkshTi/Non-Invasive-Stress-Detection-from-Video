@@ -88,6 +88,10 @@ def getHR(instance, PLOTSDIR):
   bpm_list_actual = [i for i in bpm_list if i is not 0]
 
   num_zeroes = len(bpm_list)-len(bpm_list_actual)
+  for i in range(num_zeroes):
+        if i >= len(bpm_list_actual):
+            i%=bpm_list_actual
+        prepend.append(bpm_list_actual[i])
   prepend = [bpm_list_actual[i] for i in range(num_zeroes)]
   bpm_list_actual = prepend + bpm_list_actual
   time = len(bpm_list_actual)//videoFrameRate
