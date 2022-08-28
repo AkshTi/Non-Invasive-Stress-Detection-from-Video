@@ -62,7 +62,7 @@ def converter(emotion_array, bpm_list, stress_value_list, duration, PLOTSDIR):
       return semi_high_stress
     elif bpms >= 90:
       return medium_stress
-    elif bpms >= 80:
+    elif bpms >= 70:
       return low_stress
     else:
       return no_stress
