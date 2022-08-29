@@ -118,6 +118,8 @@ def get_frame(directory, duration, fps, frame_count):
                 eyedist = ebdist(leyebrow[-1],reyebrow[0])
 
                 stress_value,stress_label = normalize_values(points,eyedist, points_lip, lipdist)
+                if stress_value>0.85:
+                    stress_value = 0.85
                 stress_value_list.append(stress_value)
                 prev_hash = stress_value
                 stress_level_list.append(stress_label)
