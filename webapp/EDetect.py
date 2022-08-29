@@ -72,52 +72,59 @@ def get_frame(directory, duration, fps, frame_count):
     stress_level_list = []
     cap = cv2.VideoCapture(directory)
     count = 0
+    e = 0
+    prev_hash = 0
+    chooseframeseachsecond = 5
     while cap.isOpened():
-        fps = int(cap.get(cv2.CAP_PROP_FPS))
-        ret,frame = cap.read()
-        frame = cv2.flip(frame,1)
-      
-        # if xres is larger than yres, remove x boundaries 
-        yres, xres, _ = frame.shape 
-        if xres > yres:
-          crop = (xres - yres) // 2
-          frame = frame[:,crop:-crop,:]
-        if yres > xres:
-          crop = (yres - xres) // 2
-          frame = frame[crop:-crop,:,:]
+        if (e%chooseframeseachsecond==0):
+            fps = int(cap.get(cv2.CAP_PROP_FPS))
+            ret,frame = cap.read()
+            frame = cv2.flip(frame,1)
 
-        if frame is not None:
-          frame = imutils.resize(frame, width=500,height=500)
-        
-          (lBegin, lEnd) = face_utils.FACIAL_LANDMARKS_IDXS["right_eyebrow"]
-          (rBegin, rEnd) = face_utils.FACIAL_LANDMARKS_IDXS["left_eyebrow"]
-           # lip aka mouth
-          (l_lower, l_upper) = face_utils.FACIAL_LANDMARKS_IDXS["mouth"]
+            # if xres is larger than yres, remove x boundaries 
+            yres, xres, _ = frame.shape 
+            if xres > yres:
+              crop = (xres - yres) // 2
+              frame = frame[:,crop:-crop,:]
+            if yres > xres:
+              crop = (yres - xres) // 2
+              frame = frame[crop:-crop,:,:]
 
-          #preprocessing the image
-          gray = cv2.cvtColor(frame,cv2.COLOR_BGR2GRAY)
-          count +=1
-          detections = detector(gray,0)
-          for detection in detections:
-            shape = predictor(frame,detection)
-            shape = face_utils.shape_to_np(shape)
-                
-            leyebrow = shape[lBegin:lEnd]
-            reyebrow = shape[rBegin:rEnd]
-            openmouth = shape[l_lower:l_upper]
-                
-            reyebrowhull = cv2.convexHull(reyebrow)
-            leyebrowhull = cv2.convexHull(leyebrow)
-            openmouthhull = cv2.convexHull(openmouth) # figuring out convex shape when lips opened
-            # Measuring lip aka "open mouth" and eye distance
-            lipdist = lpdist(openmouthhull[-1],openmouthhull[0])
-            eyedist = ebdist(leyebrow[-1],reyebrow[0])
+            if frame is not None:
+              frame = imutils.resize(frame, width=500,height=500)
 
-            stress_value,stress_label = normalize_values(points,eyedist, points_lip, lipdist)
-            stress_value_list.append(stress_value)
-            stress_level_list.append(stress_label)
-            
-            if count==frame_count:
-              cap.release()
+              (lBegin, lEnd) = face_utils.FACIAL_LANDMARKS_IDXS["right_eyebrow"]
+              (rBegin, rEnd) = face_utils.FACIAL_LANDMARKS_IDXS["left_eyebrow"]
+               # lip aka mouth
+              (l_lower, l_upper) = face_utils.FACIAL_LANDMARKS_IDXS["mouth"]
 
+              #preprocessing the image
+              gray = cv2.cvtColor(frame,cv2.COLOR_BGR2GRAY)
+              count +=1
+              detections = detector(gray,0)
+              for detection in detections:
+                shape = predictor(frame,detection)
+                shape = face_utils.shape_to_np(shape)
+
+                leyebrow = shape[lBegin:lEnd]
+                reyebrow = shape[rBegin:rEnd]
+                openmouth = shape[l_lower:l_upper]
+
+                reyebrowhull = cv2.convexHull(reyebrow)
+                leyebrowhull = cv2.convexHull(leyebrow)
+                openmouthhull = cv2.convexHull(openmouth) # figuring out convex shape when lips opened
+                # Measuring lip aka "open mouth" and eye distance
+                lipdist = lpdist(openmouthhull[-1],openmouthhull[0])
+                eyedist = ebdist(leyebrow[-1],reyebrow[0])
+
+                stress_value,stress_label = normalize_values(points,eyedist, points_lip, lipdist)
+                stress_value_list.append(stress_value)
+                prev_hash = stress_value
+                stress_level_list.append(stress_label)
+
+                if count==frame_count:
+                  cap.release()
+        else:
+            stress_level_list.append(prev_hash)
+        e+=1
     return stress_value_list, stress_level_list, fps, frame_count
