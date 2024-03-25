@@ -1,5 +1,5 @@
 # Non-Invasive-Stress-Detection-from-Video
-We present a non-invasive stress detector that identifies an individual's stress from video. It takes a multimodal approach to evaluate stress features through facial recordings, and alerts the user in case they experience medium to high stress.
+We present a non-invasive stress detector that identifies an individual's stress from video. It takes a multimodal approach to evaluate stress features through facial recordings, and alerts the user in case they experience medium to high stress. It uses machine learning models and other computer vision approaches (EVM) to generate stress detections.
 
 ---
 # How To Use
